@@ -271,7 +271,9 @@ export default class Details extends Component {
       
       if(this.state.isloadding)
       {
-        <ActivityIndicator style={{marginTop:80}}/>
+        <View style={{justifyContent:"center", flex:1}}>
+          <ActivityIndicator size="large" color="#00ff00" paddingTop= {80}/>
+          </View>
       }
       return (
         
@@ -307,7 +309,7 @@ export default class Details extends Component {
             <Text>Chat</Text>
           </Button>
               <Button bordered primary style={styles.Button} icon onPress={()=> {
-                this.props.navigation.navigate('Oders')
+                this.props.navigation.navigate('Oders',{maxe :this.props.navigation.state.params.idcar })
               }}>
               <Icon name='paper' />
                 <Text style= {{ fontSize:16, fontFamily:'tahoma'}}> Đặt hẹn ngay </Text>

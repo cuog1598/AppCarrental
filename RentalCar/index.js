@@ -23,4 +23,4 @@ YellowBox.ignoreWarnings([
   'Module RCTImageLoader requires',
 ]);
 
-AppRegistry.registerComponent(appName, () => Oders );
+AppRegistry.registerComponent(appName, () => appcontainer );

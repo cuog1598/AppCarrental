@@ -117,7 +117,10 @@ fetch('http://10.0.2.2:45455/api/Huyens/'+value)
     if(this.state.isLoadding)
     {
       return(
-        <ActivityIndicator style={{marginTop:80}}/>
+        <View style={{justifyContent:"center", flex:1}}>
+          <ActivityIndicator size="large" color="##00ff00" paddingTop= {80}/>
+
+          </View>
       )
     }
     return (
