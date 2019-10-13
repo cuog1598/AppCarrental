@@ -256,7 +256,7 @@ export default class Seemore extends Component {
                           <View style={{flex: 0.6}} >
                             <Text style={styles.TextCardItem}>{this.state.totalDay/(1000 * 60 * 60 * 24)}</Text>
                             <Text style={styles.TextCardItem}>{this.state.gia} ngày</Text>
-                            <Text style={styles.TextCardItem}>2.500.000</Text>
+                            <Text style={styles.TextCardItem}>2.500.000 đ</Text>
                           </View>
                         </View>
                         </Body>
@@ -292,42 +292,52 @@ export default class Seemore extends Component {
 
   }
   Oders= () =>{
-    this.setState({ 
-      lazyLoad:true
-     });
-    fetch('http://10.0.2.2:45455/api/Oders', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              "maXe": this.props.navigation.state.params.maxe,
-              "maUs": 1,
-              "ngayLap": new Date(),
-              "tuNgay": this.state.chosenDate,
-              "denNgay": this.state.chosenDateTo,
-              "tinhTrangThanhToan": null,
-              "status": true,
-              "songay": this.state.totalDay/(1000 * 60 * 60 * 24),
-              "tongTien": this.state.gia * (this.state.totalDay/(1000 * 60 * 60 * 24)) + 2500000,
-              "giamgia": null,
-              "huy": false,
-              "xacnhan": null,
-            })
-            }).then((response) => response.json())
-              .then((responseJson) => {
-             if(responseJson.title =="Not Found" ) {
-              alert('không thành công')
+    
 
-            } else {
-                alert('ok');
-               this.props.navigation.navigate("Home");
-            }
-            }).catch((error) => {
-              console.error(error);
-            });
+     const {chosenDate, chosenDateTo,disabled} = this.state;
+     if(disabled === true)
+     {
+       alert ('Bạn chưa chưa chọn ngày')
+     }
+     else
+     {
+      this.setState({ 
+        lazyLoad:true
+       });
+      fetch('http://10.0.2.2:45455/api/Oders', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "maXe": this.props.navigation.state.params.maxe,
+          "maUs": 1,
+          "ngayLap": new Date(),
+          "tuNgay": this.state.chosenDate,
+          "denNgay": this.state.chosenDateTo,
+          "tinhTrangThanhToan": null,
+          "status": true,
+          "songay": this.state.totalDay/(1000 * 60 * 60 * 24),
+          "tongTien": this.state.gia * (this.state.totalDay/(1000 * 60 * 60 * 24)) + 2500000,
+          "giamgia": null,
+          "huy": false,
+          "xacnhan": null,
+        })
+        }).then((response) => response.json())
+          .then((responseJson) => {
+         if(responseJson.title =="Not Found" ) {
+          alert('không thành công')
+
+        } else {
+            alert('ok');
+           this.props.navigation.navigate("Home");
         }
+        }).catch((error) => {
+          console.error(error);
+        });
+    }
+  }
 }
 
 class CarDetails extends Component {

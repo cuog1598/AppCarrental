@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import {StatusBar, ImageBackground, View,StyleSheet,Dimensions,TouchableOpacity,Image,SafeAreaView,Text,ScrollView,ActivityIndicator} from 'react-native'
-import { Container, Header, Left, Body, Right, Button, Icon, Title, Content,Form,Picker,Card } from 'native-base';
+import { Container, Header, Left, Body, Right, Button , Title, Content,Form,Picker,Card } from 'native-base';
 import { SearchBar } from 'react-native-elements';
 import backgroud from '../images/backgroud/backgroud.jpg'
+import Icon from 'react-native-vector-icons/Ionicons';  
 
 const a= '../images/backgroud/white.jpg'
 
@@ -111,6 +112,9 @@ fetch('http://10.0.2.2:45455/api/Huyens/'+value)
       alert('Bạn chưa chọn đủ thông tin')
     }
    
+
+
+
   render() {
     const {navigation}=this.props; 
     const {navigate} = this.props.navigation;
@@ -136,9 +140,12 @@ fetch('http://10.0.2.2:45455/api/Huyens/'+value)
             <TouchableOpacity onPress={() => {
                         navigation.goBack()
                     }}>
-              <Icon style={{paddingLeft:20, paddingTop:10}} name='arrow-back' />
+              <Icon style={{paddingLeft:20, paddingTop:10}} name='ios-arrow-back' size={30} />
             </TouchableOpacity>
+
             <Text style= {{fontSize:20, textAlign:"center", paddingTop:10, paddingLeft:30}}>{this.state.title}</Text>
+      
+
           </ScrollView>
         
         </View>
@@ -154,7 +161,7 @@ fetch('http://10.0.2.2:45455/api/Huyens/'+value)
         <Form>
             <Picker
               mode="dropdown"
-              iosIcon={<Icon name="arrow-down" />}
+              iosIcon={<Icon name="ios-arrow-down" />}
               style={{ width: width }}
               selectedValue={this.state.selected}
               onValueChange={this.onValueChange.bind(this)}
@@ -174,7 +181,7 @@ fetch('http://10.0.2.2:45455/api/Huyens/'+value)
         <Form>
       <Picker
               mode="dropdown"
-              iosIcon={<Icon name="arrow-down" />}
+              iosIcon={<Icon name="ios-arrow-down" />}
               style={{ width: undefined }}
               selectedValue={this.state.selected2}
               onValueChange={this.onValueChange2.bind(this)}
@@ -213,10 +220,10 @@ const {height,width}= Dimensions.get('window')
 const styles = StyleSheet.create({
     container: {
     backgroundColor: 'transparent',
-    height:80,
+    height:100,
       },
     Thumbnail:{
-        height:80,
+        height:100,
         left: 0,
         right: 0,
         width: width,

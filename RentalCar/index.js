@@ -16,7 +16,6 @@ import Details from './Screens/Product/Details';
 import Seemore from './Screens/Product/Seemore'
 import Oders from './Screens/Product/Oders'
 
-
 YellowBox.ignoreWarnings([
   'Warning: componentWillMount is deprecated',
   'Warning: componentWillReceiveProps is deprecated',
