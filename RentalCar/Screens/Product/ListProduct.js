@@ -60,7 +60,6 @@ export default class CardImageExample extends Component {
   _renderitem= ({item}) => {
     const {navigate} = this.props.navigation;
       return (
-        
       <View style={{ height:340,marginBottom:5, borderBottomColor:'gray', borderBottomWidth:0.4}}>
         <TouchableOpacity onPress={() => navigate('Details',{idcar : item.id, manguoidang: item.maNguoiDang,key:this.props.navigation.key})}>
 
@@ -128,7 +127,9 @@ export default class CardImageExample extends Component {
               </View>
               <View style={{flex: 0.3}} horizontal={true}>
               <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:20}}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>{
+                  navigate('CartL')
+                }}>
                  <Icon style={{paddingLeft:10, paddingTop:10}} name='ios-heart-empty' size={30} />
                 </TouchableOpacity>
                 <TouchableOpacity>

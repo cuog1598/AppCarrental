@@ -75,7 +75,6 @@ export default class Details extends Component {
       .catch((error) => {
           console.error(error);
       });
-
 }
 
 

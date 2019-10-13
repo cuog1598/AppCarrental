@@ -9,6 +9,7 @@ import ListProduct from './Screens/Product/ListProduct';
 import Details from './Screens/Product/Details';
 import SeeMore from './Screens/Product/Seemore';
 import Oders from './Screens/Product/Oders'
+import Cart from './Screens/Product/Cart'
 //Screen names
 
 import {createAppContainer} from 'react-navigation';
@@ -126,6 +127,9 @@ const Appnavigator2= createStackNavigator(
             header:null,
         }},
         Oders: {screen:Oders, navigationOptions:{
+            header:null,
+        }},
+        CartL: {screen:Cart, navigationOptions:{
             header:null,
         }},
         block: {screen: Block},

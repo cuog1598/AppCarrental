@@ -1,397 +1,156 @@
-import React,{Component} from 'react';
+import React, { Component } from 'react';
+import { Container, Header, Content, List, ListItem, Thumbnail, Left, Body, Right, Button, Fab ,Card} from 'native-base';
+import {StyleSheet, StatusBar, View, Text, TouchableOpacity, FlatList, ActivityIndicator,Dimensions,ImageBackground,ScrollView} from 'react-native'
+import Icon from 'react-native-vector-icons/Ionicons';  
+const a= '../images/backgroud/white.jpg'
 
-import { ListView,StatusBar, StyleSheet,Text,Image, View,SafeAreaView,TouchableHighlight,Dimensions,ScrollView, ImageBackground,TouchableOpacity, ActivityIndicator} from 'react-native';
-
-import { WebView } from 'react-native-webview';
-
-import { Container, Header, Content, Card, CardItem, Body, Icon, Left ,Button,Footer, FooterTab} from "native-base";
-
-import Carousel from 'react-native-snap-carousel';
-
-import { FlatList } from 'react-native-gesture-handler';
-
-import Moment from 'moment';
-
-import Event from '../Envent'
-
-const { width: screenWidth } = Dimensions.get('window')
-
-export default class Details extends Component {
- 
-    constructor(props){
-        super(props);
-        this.state = {
-            carouselItems: [],
-            isloadding:true,
-            obj:[],
-            phone:'',
-            email:'',
-            ngaynhap:'',
-            t: '',
-        }
+export default class ListThumbnailExample extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+        TenXe : '',
+        Gia: '',
+        DiaChi: '',
+        MaXe: '',
+        MaNguoiDang: '',
+        id:'',
+        obj:[],
+        IsData:false,
+        IsLoadding: true,
     }
-    componentDidMount() {
-      const {navigation} = this.props;
-      this._fetchData();
-      this._fetchNguoiDang();
-      this._Bindding();
-    }
+}
 
+componentDidMount(){
+  this._GetAllcart();
+}
 
-
-    _fetchNguoiDang = () => {
-      fetch('http://10.0.2.2:45455/api/Users/'+this.props.navigation.state.params.manguoidang)
-        .then((response) => response.json())
-        .then((resopnseJson) => {
-         
-            this.setState ({
-              obj: resopnseJson,
-              phone:resopnseJson.phone,
-              email:resopnseJson.tenNguoiDang
-            })
-
-            if(this.state.obj.length ==0)
-              {
-                alert('cant load users from server')
-              }
-            
+_GetAllcart = () => {
+  fetch('http://10.0.2.2:45455/api/CartPerUser/1')
+    .then((response) => response.json())
+    .then((resopnseJson) => {
+        this.setState ({
+          obj: resopnseJson,
+          IsLoadding:false
         })
-        .catch((error) => {
-            console.error(error);
-        });
-  
-  }
-
-  
-  _Bindding = () => {
-    fetch('http://10.0.2.2:45455/api/getcar/'+this.props.navigation.state.params.idcar)
-      .then((response) => response.json())
-      .then((resopnseJson) => {
-          this.setState ({
-            ngayNhap: resopnseJson.ngayNhap
-          })
-          
+    if(this.state.obj.length=== 0)
+    {
+      this.setState ({
+        IsData:true
       })
-      .catch((error) => {
-          console.error(error);
-      });
-
+    }
+    else{}
+    })
+    .catch((error) => {
+        console.error(error);
+    });
 }
 
 
-
-    _fetchData = () => {
-      fetch('http://10.0.2.2:45455/api/DetailsCar/'+this.props.navigation.state.params.idcar)
-        .then((response) => response.json())
-        .then((resopnseJson) => {
-            this.setState ({
-              carouselItems: resopnseJson,
-             
-              isloadding:false,
-
-            })
-
-            if(this.state.carouselItems.length ==0)
-              {
-                alert('cant load data')
-              }
-            
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-  
-  }
-
-  _goback () {
-    const {navigation} = this.props;
-    navigation.goBack();
-  }
-  _Save=() =>  {
-    alert('You tapped the button!')
-  }
-
-//header images
-    _renderItem({item}){
-
-      return (
-        
-        <View style={styles.container}>
-
-        <View style={styles.Thumbnail}>
-          
-            <ImageBackground
-                source={{uri: 'http://10.0.2.2:45457'+item.hinh}}
-                containerStyle={styles.imageContainer}
-                style={styles.i}
-                parallaxFactor={0.4}
-            >
-              <ScrollView horizontal={true}>
-               
-              
-              </ScrollView>
-               
-            </ImageBackground>
-        </View>
-        </View>
-    );
-  }
-//main list
-  _render= ({item}) => {
-    let newDate = Moment().format(''+this.state.ngaynhap+'DD-MM-YYYY');
-
-      return (
-        <View>
-          <Card transparent >
-          <CardItem transparent style={{ borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
-              <Body>
-              <Button transparent>
-                <Icon active name="thumbs-up" style={{color:'#228b22'}} />
-                <Text style={styles.titile}>
-                   {' '}Đã kiểm chứng
-                </Text>
-                <TouchableOpacity>
-                  <Icon style={{height:30,width:30,paddingRight:8,color:'black'}} name='heart' size={50} onPress={this._Save} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => {
-                        this.props.navigation.navigate("SeeMore",{key:this.props.navigation.state.params.idcar});
+_renderitem= ({item}) => {
+    return (
+      <Content>
+          <ListItem thumbnail style={{marginTop:10, height:120}} onPress={() => {
+                        this.props.navigation.navigate('Cartdetails')
                     }}>
-                <Image source={require('../images/backgroud/icon.jpg')} style={{height:25, width:25}}></Image>
-
-                </TouchableOpacity>
-                </Button>
-                <Button transparent>
-                <Text style={styles.TenXe}>
-                  {item.tenxe}
-                </Text>
-                <Text style={styles.NameHeader}>
-                  {item.gia} VNĐ
-                </Text>
-                  </Button>
-                
-                <Button transparent disabled={true} style={{paddingTop:-5}}>
-                <Text style={styles.Text} >
-                  Địa chỉ 
-                </Text>
-                <Text style={styles.Text}>
-                 {item.diachi}
-                </Text>
-                </Button>
-
-                <Button transparent disabled={true}>
-                <Text style={styles.Text}>
-                Tiền cọc    
-                </Text>
-                <Text style={styles.Text}>
-                 2.500.000 VNĐ
-                </Text>
-                </Button>
-
-                <Button transparent disabled={true}>
-                <Text>
-                  Người đăng 
-                </Text>
-                <Text style={styles.Text}>
-                {item.tenNguoiDang}
-                </Text>
-                </Button>
-
-                <Button transparent disabled={true}>
-                <Text>
-                  Điện thoại/ Email
-                </Text>
-                <Text style={styles.Text}>
-                  {this.state.phone}
-                </Text>
-                </Button>
-                
-              </Body>
-            </CardItem>
-          </Card>
-
-           <Card transparent>
-           <CardItem transparent style={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
-              <Text style={styles.Text}>Ngày Đăng</Text>
-            </CardItem>
-            <CardItem>
+              <Left>
+                <Thumbnail square source={{ uri:'http://10.0.2.2:45457'+item.images  }} style={{height:80, width:80}} />
+              </Left>
               <Body>
-              <Text style={styles.Text}>{newDate}</Text>
+                <Text>{item.tenxe}</Text>
+                <Text note numberOfLines={1}>{item.diaChi}</Text>
               </Body>
-            </CardItem>
-           
-         </Card>
+            <Right>
+            <TouchableOpacity onPress={() => {
+                        alert('trash')
+                    }}>
+                <Icon style={{fontWeight:'bold', color:'#7cfc00'}} name='ios-trash' size={30}/>
+              </TouchableOpacity>
+            </Right>
+          </ListItem>
+      </Content>
+       
+    )
+}
 
-         <Card transparent> 
-         <CardItem transparent style={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
-              <Text style={styles.Text}>Địa chỉ</Text>
-            </CardItem>
-            <CardItem>
-              <Body>
-              <Text style={styles.Text}>{item.diachi}</Text>
-              </Body>
-            </CardItem>
-           
-         </Card>
-      
-
-        <Card transparent style={{ borderRadius: 12 }}>
-        <CardItem transparent style={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
-              <Text style={styles.Text}>Chi tiêt</Text>
-            </CardItem>
-            <CardItem>
-              <Body>
-              <Text style={styles.Text}>{item.mota}</Text>
-              
-              </Body>
-            </CardItem>
-           
-         </Card>
-          <Card transparent style={{ borderRadius: 12 }}>
-          <CardItem transparent style={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
-                <Text style={styles.Text}>Cùng tiêu chi</Text>
-              </CardItem>
-              <CardItem>
-                <Event/>
-              </CardItem>
-            
-          </Card>
-
-        </View>
-        
-
-         
-      )
-  }
-
-    render() {
-      const {navigation}=this.props; 
-
-      
-      if(this.state.isloadding)
-      {
+  render() {
+    const {navigation}=this.props; 
+    if(this.state.IsLoadding)
+    {
+      return(
         <View style={{justifyContent:"center", flex:1}}>
           <ActivityIndicator size="large" color="#00ff00" paddingTop= {80}/>
-          </View>
-      }
-      return (
-        <Container style={styles.container}>
-          <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true}/>
-          <ScrollView showsVerticalScrollIndicator= {false}>
-         <View>
-     
-          <Carousel
-                sliderWidth={screenWidth}
-                sliderHeight={screenWidth}
-                itemWidth={screenWidth}
-                data={this.state.carouselItems}
-                renderItem={this._renderItem}
-                hasParallaxImages={true}
-                style={{flex:1}}
-            />
+        </View>
+      )
+    }
+    else
+    if(this.state.IsData)
+    {
+      return(
+        <View>
+          <Text>Không có kết quả trả về</Text>
+        </View>
+      )
+    }
+    return (
+      <Container>
+        <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent={true}/>
+            <View style={styles.container}>
+
+              <View style={styles.Thumbnail}>
+              <ImageBackground style={styles.Thumbnail} source={require(a)}>
+                <View
+                  style={{
+                  flexDirection: 'row',
+                  paddingLeft: 10,
+                  paddingTop:20,
+                  justifyContent:'center'
+                  }}>
+              <View style={{flex: 0.1}}>
+              <TouchableOpacity onPress={() => {
+                              navigation.goBack()
+                          }}>
+                    <Icon style={{paddingLeft:20, paddingTop:20, fontWeight:'bold'}} name='ios-arrow-back' size={30}/>
+                  </TouchableOpacity>
+              </View>
+              <View style={{flex: 0.9}}>
+               <Text style= {{fontSize:20, paddingTop:20, paddingLeft:40,}}>Danh sách ưa thích</Text>
               
+              </View>
           </View>
-          <FlatList 
-                data={this.state.carouselItems}
-                renderItem={this._render}
-                keyExtractor={() => Math.random().toString(36).substr(2, 9)}
-          >
-          </FlatList>
-         </ScrollView>
-         
-          <Footer style={styles.footer}>
-          <FooterTab style={styles.footer}>
-            <ScrollView horizontal= {true}>
-
-            <Button bordered danger icon   style={styles.Button}
-              onPress={this._onPressButton}
+              </ImageBackground>
+              <View style={{height:0.8, backgroundColor:'gray'}}>
+              </View>
+              </View>
+        <Content style={{paddingTop:10}}>
+          <List>
+            <FlatList 
+              data={this.state.obj}
+              renderItem={this._renderitem}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={() => Math.random().toString(36).substr(2, 9)}
             >
-            <Icon name='chatboxes' />
-            <Text>Chat</Text>
-          </Button>
-              <Button bordered primary style={styles.Button} icon onPress={()=> {
-                this.props.navigation.navigate('Oders',{maxe :this.props.navigation.state.params.idcar })
-              }}>
-              <Icon name='paper' />
-                <Text style= {{ fontSize:16, fontFamily:'tahoma'}}> Đặt hẹn ngay </Text>
-                </Button>
+            </FlatList>
+        </List>
 
-            </ScrollView>
-          </FooterTab>
-        </Footer>
-        </Container>
-      
-      );
+        </Content>
+        </View>
+      </Container>
+    );
   }
 }
+
 const {height,width}= Dimensions.get('window')
 const styles = StyleSheet.create({
-  item: {
-    width: screenWidth ,
-    height: 150 ,
-  },
   container: {
-    backgroundColor:'#f5f5f5',
-  },
-      container2: {
-      paddingTop:40,
-    backgroundColor: '#F5FCFF',
-    position: 'relative'
-      },
-  imageContainer: {
-    backgroundColor: 'white',
-  },
-  image: {
-    ...StyleSheet.absoluteFillObject,
-    resizeMode: 'cover',
-  },
-  i:{
-    resizeMode:'stretch',
-    width: screenWidth ,
-    height: 230 ,
-    flex:1,
-  },
-  NameHeader: {
-    fontFamily:'tahoma',
-    fontSize:30,
-    fontWeight:'bold',
-    color:'#daa520'
-  },
-  titile: {
-    color:'#228b22',
-    fontSize:16,
-    fontFamily: 'tahoma',
-    paddingRight:180
-  },
-  TenXe : {
-    fontSize:18,
-    fontWeight:'200'
-  }
-  ,
-  Text : {
-    fontSize:16,
-    fontFamily:'tahoma',
-    paddingTop:4
-  },
-  footer: {
-    height:80,
-    backgroundColor:'white',
-    borderTopColor:'gray',
-    borderTopWidth:0.4,
-  },
-  Button:{
-    borderRadius:6,
-    width:120,
-    marginLeft:55,
-  },
-  containers: {
-    backgroundColor: 'transparent',
-    height:230,
+    flex:1
       },
     Thumbnail:{
-        height:230,
+        height:100,
         left: 0,
         right: 0,
         width: width,
-        
+        borderBottomColor:'gray',
+        borderBottomWidth:0.4,
     },
+  
 })
