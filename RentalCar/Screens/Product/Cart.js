@@ -1,10 +1,25 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, List, ListItem, Thumbnail, Left, Body, Right, Button, Fab ,Card} from 'native-base';
-import {StyleSheet, StatusBar, View, Text, TouchableOpacity, FlatList, ActivityIndicator,Dimensions,ImageBackground,ScrollView} from 'react-native'
+import {StyleSheet,Image, StatusBar, View, Text, TouchableOpacity, FlatList, ActivityIndicator,Dimensions,ImageBackground,ScrollView,ToastAndroid} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons';  
-const a= '../images/backgroud/white.jpg'
 
-export default class ListThumbnailExample extends Component {
+
+const Toast = (props) => {
+  if (props.visible) {
+    ToastAndroid.showWithGravityAndOffset(
+      props.message,
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+    return null;
+  }
+  return null;
+};
+
+
+export default class Cart extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -17,12 +32,29 @@ export default class ListThumbnailExample extends Component {
         obj:[],
         IsData:false,
         IsLoadding: true,
+        visible: false,
+
     }
 }
 
 componentDidMount(){
   this._GetAllcart();
 }
+handleButtonPress = () => {
+  this.setState(
+    {
+      visible: true,
+    },
+    () => {
+      this.hideToast();
+    },
+  );
+};
+hideToast = () => {
+  this.setState({
+    visible: false,
+  });
+};
 
 _GetAllcart = () => {
   fetch('http://10.0.2.2:45455/api/CartPerUser/1')
@@ -48,21 +80,21 @@ _GetAllcart = () => {
 
 _renderitem= ({item}) => {
     return (
+
       <Content>
-          <ListItem thumbnail style={{marginTop:10, height:120}} onPress={() => {
-                        this.props.navigation.navigate('Cartdetails')
-                    }}>
+          <ListItem thumbnail style={{marginTop:10, height:120}}
+           onPress={() => this.props.navigation.navigate('Details',{idcar : item.maxe, manguoidang: item.manguoidang,key:this.props.navigation.key})}>
               <Left>
                 <Thumbnail square source={{ uri:'http://10.0.2.2:45457'+item.images  }} style={{height:80, width:80}} />
               </Left>
               <Body>
-                <Text>{item.tenxe}</Text>
-                <Text note numberOfLines={1}>{item.diaChi}</Text>
+                <Text style={styles.TextHeader}>{item.tenxe}</Text>
+                <Text note numberOfLines={1}style={styles.TextCardItem} >{item.diaChi}</Text>
               </Body>
             <Right>
-            <TouchableOpacity onPress={() => {
-                        alert('trash')
-                    }}>
+           
+              <TouchableOpacity onPress= {()=> this.Delete(item.id)}>
+
                 <Icon style={{fontWeight:'bold', color:'#7cfc00'}} name='ios-trash' size={30}/>
               </TouchableOpacity>
             </Right>
@@ -70,6 +102,39 @@ _renderitem= ({item}) => {
       </Content>
        
     )
+}
+
+  Delete= (Values) =>{
+    
+    this.setState({ 
+      lazyLoad:true
+      });
+    fetch('http://10.0.2.2:45455/api/Carts/'+Values, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      }).then((response) => response.json())
+        .then((responseJson) => {
+        if(responseJson.title =="Not Found" ) {
+        alert('không thành công')
+
+      } else {
+          this._GetAllcart();
+          this.setState(
+            {
+              visible: true,
+            },
+            () => {
+              this.hideToast();
+            },
+          );
+         
+      }
+      }).catch((error) => {
+        console.error(error);
+      });
 }
 
   render() {
@@ -86,18 +151,60 @@ _renderitem= ({item}) => {
     if(this.state.IsData)
     {
       return(
-        <View>
-          <Text>Không có kết quả trả về</Text>
-        </View>
-      )
-    }
-    return (
-      <Container>
+        <Container>
+      <Toast visible={this.state.visible} message="Xoá thành công" />
+
         <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent={true}/>
             <View style={styles.container}>
 
               <View style={styles.Thumbnail}>
-              <ImageBackground style={styles.Thumbnail} source={require(a)}>
+              <ImageBackground style={styles.Thumbnail} source={require('../images/backgroud/white.jpg')}>
+                <View
+                  style={{
+                  flexDirection: 'row',
+                  paddingLeft: 10,
+                  paddingTop:20,
+                  justifyContent:'center'
+                  }}>
+              <View style={{flex: 0.1}}>
+              <TouchableOpacity onPress={() => {
+                              navigation.goBack()
+                          }}>
+                    <Icon style={{paddingLeft:20, paddingTop:20, fontWeight:'bold'}} name='ios-arrow-back' size={30}/>
+                  </TouchableOpacity>
+              </View>
+              <View style={{flex: 0.9}}>
+               <Text style= {{fontSize:20, paddingTop:20, paddingLeft:40,}}>Danh sách ưa thích</Text>
+              
+              </View>
+          </View>
+              </ImageBackground>
+              <View style={{height:0.8, backgroundColor:'gray'}}>
+              </View>
+              </View>
+              <View>
+         <Image style={{justifyContent:'center', position:'absolute', width:width, height:200, marginTop:150, backgroundColor:'transparent'}} 
+        source={require('../images/backgroud/poro.png')}> 
+
+         </Image>
+          <Text style={{marginTop:400, fontSize:20, fontWeight:'bold', textAlign:"center",color:'gray'}}>Opp!{"\n"} Không tìm thấy kết quả nào   </Text>
+
+        </View>
+        
+        </View>
+
+      </Container>
+      )
+    }
+    return (
+      <Container>
+      <Toast visible={this.state.visible} message="Xoá thành công" />
+
+        <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent={true}/>
+            <View style={styles.container}>
+
+              <View style={styles.Thumbnail}>
+              <ImageBackground style={styles.Thumbnail} source={require('../images/backgroud/white.jpg')}>
                 <View
                   style={{
                   flexDirection: 'row',
@@ -137,6 +244,7 @@ _renderitem= ({item}) => {
       </Container>
     );
   }
+ 
 }
 
 const {height,width}= Dimensions.get('window')
@@ -152,5 +260,14 @@ const styles = StyleSheet.create({
         borderBottomColor:'gray',
         borderBottomWidth:0.4,
     },
-  
+    TextHeader : {
+      paddingTop:1,
+      fontWeight:'bold',
+      fontSize:18,
+      fontFamily:'time new roman',
+      },
+      TextCardItem : {
+        fontSize :18,
+        marginTop:2
+      }
 })

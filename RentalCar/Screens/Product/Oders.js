@@ -292,8 +292,6 @@ export default class Seemore extends Component {
 
   }
   Oders= () =>{
-    
-
      const {chosenDate, chosenDateTo,disabled} = this.state;
      if(disabled === true)
      {
@@ -323,6 +321,8 @@ export default class Seemore extends Component {
           "giamgia": null,
           "huy": false,
           "xacnhan": null,
+          "TenXe" : this.state.TenXe,
+          "DiaCHi" : this.state.diachi,
         })
         }).then((response) => response.json())
           .then((responseJson) => {

@@ -167,17 +167,39 @@ export default class CardImageExample extends Component {
         <View style={styles.container}>
         <View style={styles.Thumbnail}>
         <ImageBackground style={styles.Thumbnail} source={require(a)}>
-        <View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:20}}>
-            <TouchableOpacity onPress={() => {
-                        navigation.goBack()
-                    }}>
-              <Icon style={{paddingLeft:20, paddingTop:10, fontWeight:'bold'}} name='ios-arrow-back' size={30} />
-            </TouchableOpacity>
-            <Text style= {{fontSize:20, textAlign:"center", paddingTop:10, paddingLeft:30}}>Kết Quả Tìm Kiếm</Text>
-          </ScrollView>
-        
-        </View>
+        <View
+            style={{
+            flexDirection: 'row',
+            paddingLeft: 10
+            }}>
+              <View style={{flex: 0.7}}>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:20}}>
+                  <TouchableOpacity onPress={() => {
+                                navigation.goBack()
+                            }}>
+                    <Icon style={{paddingLeft:20, paddingTop:10,fontWeight:'bold'}} name='ios-arrow-back'  size={30}/>
+                  </TouchableOpacity>
+                    <Text style= {{fontSize:20, textAlign:"center", paddingTop:10, paddingLeft:30}}>Kết Quả Tìm Kiếm</Text>
+
+                    
+                </ScrollView>
+              </View>
+              <View style={{flex: 0.3}} horizontal={true}>
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:20}}>
+                <TouchableOpacity onPress={()=>{
+                  navigate('CartL')
+                }}>
+                 <Icon style={{paddingLeft:10, paddingTop:10}} name='ios-heart-empty' size={30} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{
+                  navigate('History')
+                }}>
+                  <Icon style={{paddingLeft:20, paddingTop:10}} name='md-book' size={30} />
+                </TouchableOpacity>
+              </ScrollView>
+              </View>
+
+          </View>
         </ImageBackground>
         <View style={{height:0.8, backgroundColor:'gray'}}>
           </View>

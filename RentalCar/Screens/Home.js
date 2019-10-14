@@ -57,24 +57,23 @@ export default class MainComponent extends Component {
           <Card style={{ borderRadius: 12 }}>
             <CardItem bordered style={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
             <Left style={styles.bodyleft}>
-              
               <Body style={styles.bodyleft}>
                   <Text style={styles.bodytext}>
                   Cho thuê xe ngay với RentalCar
                 </Text>
                 <TouchableOpacity>
-                <Text style={styles.kichhoat}>
-                  Bắt đầu
-                </Text>
+                  <Text style={styles.kichhoat}>
+                   Bắt đầu
+                  </Text>
                 </TouchableOpacity>
               </Body>
               </Left>
               <Right>
-                    <Body>
-                    <Thumbnail style={styles.imgtop} source={require('./images/images.jpg')}>
-                    </Thumbnail>
-                    </Body>
-                </Right>
+                <Body>
+                  <Thumbnail style={styles.imgtop} source={require('./images/images.jpg')}>
+                  </Thumbnail>
+                </Body>
+              </Right>
             </CardItem>
           </Card>
         </Content>
@@ -112,7 +111,6 @@ export default class MainComponent extends Component {
           </Card>
         </Content>
         </Content>
-            
 
         </Container>
         
