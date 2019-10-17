@@ -61,6 +61,7 @@ _User = async () => {
     console.log('Done.')
   }
    render() {
+    const {navigate} = this.props.navigation;   
     return (
       <Container>
         <ScrollView>
@@ -79,7 +80,12 @@ _User = async () => {
                <Text style= {{fontSize:22, paddingTop:25}}>{this.state.Username}</Text>
                <View style={{flexDirection:'row', justifyContent:'center'}}>
                  <View style={{flex:0.8}}>
-                   <Text style={{fontSize:16, color:'#228b22'}}>Chỉnh sửa tài khoản </Text>
+                 <TouchableOpacity onPress={() => {
+                        navigate("UserDetails");
+                    }}>
+                     <Text style={{fontSize:16, color:'#228b22'}}>Chỉnh sửa tài khoản </Text>
+
+                   </TouchableOpacity>
                  </View>
                  <View style={{flex:0.2}}>
                    <Icon style={{paddingTop:2}} name='ios-arrow-forward'  size={20}/>  

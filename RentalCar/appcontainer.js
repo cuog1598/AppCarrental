@@ -14,6 +14,7 @@ import Cart from './Screens/Product/Cart'
 import History from './Screens/Product/History'
 import OderDetails from'./Screens/Product/OderDetails'
 import Splash from './components/Splash'
+import UserDetails from './Screens/Account/EditAccount';
 //Screen names
 
 import {createAppContainer} from 'react-navigation';
@@ -170,6 +171,9 @@ const Appnavigator2= createStackNavigator(
             header:null,
         }},
         OderDetails: {screen:OderDetails, navigationOptions:{
+            header:null,
+        }},
+        UserDetails: {screen:UserDetails, navigationOptions:{
             header:null,
         }},
         block: {screen: Block},

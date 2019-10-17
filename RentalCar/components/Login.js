@@ -176,5 +176,10 @@ const styles = StyleSheet.create({
         color :'rgb(32, 53, 70)',
         fontWeight: 'bold',
         fontSize: 18
-    }
+    } ,
+    logo: {
+        width: 192,
+        height: 30,
+        marginTop:40
+    },
 })

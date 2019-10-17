@@ -1,152 +1,225 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import {
+    StyleSheet, Text, View, Image,
+    TouchableWithoutFeedback, StatusBar,
+    TextInput, SafeAreaView, Keyboard, TouchableOpacity,
+    KeyboardAvoidingView, BackHandler,ImageBackground,
+    Dimensions,
+    ScrollView
 
-import {TouchableOpacity,Image,ImageBackground,View,StyleSheet, Dimensions,StatusBar,SafeAreaView,TouchableHighlight,ScrollView, BackHandler} from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons';  
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,  Left, Body, Right,Title } from 'native-base';
-
-import Envent from './Envent'
-
+} from 'react-native'
+import { Container, Header, Content, Card, CardItem, Body,Item, Input,Icon } from "native-base";
+import AsyncStorage from '@react-native-community/async-storage';
+export default class Login extends Component {
 
 
-export default class MainComponent extends Component {   
-
-      constructor(props) {
-        super(props);
-     
+    constructor (props) {
+        super(props)
         this.state = {
-          title2: 'Chúc buổi chiều vui vẻ',
-          Home: true,
-        };
+            userName:"Nguyễn cường",
+            Phone: "",
+            email:'',
+            id:'',
+            diachi : '',
+            obj: [],
+            IsLoadding:true
+        }
+     }
+     
+     componentDidMount = () =>{
+         this._getUser();
+     }
+     _getUser = async () => {
+        const value =  await AsyncStorage.getItem('@MyApp2_key');
+        fetch('http://10.0.2.2:45455/api/Users/'+value)
+          .then((response) => response.json())
+          .then((resopnseJson) => {
+              this.setState ({
+                obj: resopnseJson,
+                userName: resopnseJson.hoTen,
+                email : resopnseJson.email,
+                Phone: resopnseJson.phone,
+                IsLoadding:false
+              })
+          if(this.state.obj.length=== 0)
+          {
+            this.setState ({
+              IsData:true
+            })
+          }
+          else{}
+          })
+          .catch((error) => {
+              console.error(error);
+          });
       }
-    componentWillMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-    }
-    
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-    }
-    
-    handleBackButton = () => {
-    
-        BackHandler.exitApp()
-        return true;
-    };
-    
-  
-
-     navigationOptions = {
-        title: 'main',
-      };
-
-    
-      onPress = () => {
-        alert("thành công");
-      }
-    render() {   
-        //send
-        const {navigate} = this.props.navigation;    
-        const {navigation}=this.props;    
-        let dataSendToDetail = {
-            name: "Star Wars",
-            releaseYear: 1977
-        };    
+    render() {
         return (
-            <SafeAreaView>
-          <Container>
-
-            <View style={styles.backgroud}>
-               <StatusBar barStyle='dark-content' backgroundColor="transparent" translucent={true}/>
-            <Content style={{paddingTop:0}}>
+            <View style={styles.container}>
+                <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true}/>
             <View>
-               <ImageBackground style={styles.Thumbnail} source={require('./images/backgroud/moto.jpg')}>
-                <Image style={styles.logo} source={require('./images/logo.png')}>
-                </Image>
-                    <Text style={styles.title}>{this.state.title2}</Text>
-              </ImageBackground>
-                  <Content padder style={styles.Cardtop}>
-                   <Card style={{ borderRadius: 12 }}>
-                    <CardItem bordered style={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
-                       <Left style={styles.bodyleft}>
-                        <Body style={styles.bodyleft}>
-                            <Text style={styles.bodytext}>
-                               Cho thuê xe ngay với RentalCar
-                              </Text>
-                            <TouchableOpacity>
-                          <Text style={styles.kichhoat}>
-                               Bắt đầu
-                          </Text>
-                           </TouchableOpacity>
-                        </Body>
-                        </Left>
-                        <Right>
-                            <Body>
-                            <Thumbnail style={styles.imgtop} source={require('./images/images.jpg')}>
-                            </Thumbnail>
-                            </Body>
-                        </Right>
-                      </CardItem>
-                     </Card>
-                </Content>
+                <ImageBackground style={styles.Thumbnail} source={require('../images/backgroud/moto.jpg')}>
+                    <Image style={styles.logo} source={require('../images/logo.png')}>
+                    </Image>
+                        <Text style={styles.title}>{this.state.title2}</Text>
+                </ImageBackground>
+                    <View
+                        style={{
+                        flexDirection: 'row',
+                        paddingLeft: 10,
+                        paddingTop:20,
+                        justifyContent:'center',
+                        borderRadius:160/2
+                        }}>
+                    <View style={{flex: 0.4}}>
                     </View>
-                </Content>
-        </View>
-        </Container>
+                    <View style={{flex:0.3, marginTop:100}}>
+                    <Card style={{borderRadius: width*0.3/2}}>
+                        <CardItem cardBody style={{ borderRadius: width*0.3/2 }}>
+                        <Image style={{height:width*0.3, width:width*0.3,borderRadius:width*0.3/2}} source={{uri: 'https://scontent.fsgn8-1.fna.fbcdn.net/v/t1.0-9/12717447_625469907606498_721627668975832331_n.jpg?_nc_cat=102&_nc_oc=AQmPHA-WM_fXvvOPcV78gnWxlnIieWeUg0fZoJLwYnHVLwIb90Hb9qa_QUq8mxdmy9E&_nc_ht=scontent.fsgn8-1.fna&oh=55dc51a389ade4abbb521ccd07ca8db9&oe=5E1A6618'}}>
+                        </Image>
+                        </CardItem>
+                       
+                    </Card>
+                    </View>
+                    
+                    <View style={{flex: 0.4}}>
+                    </View>
+                    </View>
+                    <Text style={{marginTop:10, fontSize:18, color:'gray',textAlign:'center'}}>Thành viên đăng nhập bằng Facebook</Text>
 
-        <ScrollView>
+                </View>
+                    <KeyboardAvoidingView style={styles.container}>
+                        <TouchableWithoutFeedback style={styles.container} 
+                                onPress={Keyboard.dismiss}>
+                            <View style={styles.logoContainer}>
+                                <View style={styles.infoContainer}>
+                                    <Text style={{marginLeft:4, fontSize:17, color:'gray'}}>Tên</Text>
+                                    <Item>
+                                    <Input 
+                                        onChangeText={ (userName)=> this.setState({userName})}
+                                        value={this.state.userName}
+                                        keyboardType='email-address'
+                                        returnKeyType='next'
+                                        autoCorrect={false}
+                                        onSubmitEditing={()=> this.refs.txtPassword.focus()}
+                                    />
+                                    </Item>
+                                    <Item>
+                                    
+                                   </Item>
+                                    <Text style={{marginLeft:4, fontSize:17, color:'gray'}}>Điện thoại</Text>
+                                    <Item>
+                                        <Icon active name='home' />
+                                        <Input 
+                                        onChangeText={ (Phone)=> this.setState({Phone})}
+                                        value={this.state.Phone}
+                                        keyboardType='phone-pad'
+                                        returnKeyType='next'
+                                        autoCorrect={false}
+                                        ref={"txtPassword"}
+                                        onSubmitEditing={()=> this.refs.txtPassword2.focus()}
+                                    />
+                                    </Item>
+                                    <Text style={{marginLeft:4, fontSize:17, color:'gray'}}>Email</Text>
+
+                                    <Item>
+                                        <Input  
+                                            onChangeText={ (email)=> this.setState({email})}
+                                            value={this.state.email}
+                                            placeholderTextColor='black'
+                                            returnKeyType='go'
+                                            autoCorrect={false}
+                                            ref={"txtPassword2"}
+                                        />
+                                    </Item>
+                                    
+                                    <TouchableOpacity style={styles.buttonContainer}
+                                        onPress={this.Login}>
+                                        <Text style={styles.buttonText}>LƯU</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </KeyboardAvoidingView>
+            </View>
+        )
        
-        </ScrollView>
-        </SafeAreaView>
-
-        );
     }
+    Login= async () =>{
+        const value =  await AsyncStorage.getItem('@MyApp2_key');
+        const {email, Phone, userName} = this.state;
+        if(email == "")
+        { alert('Không được để trống email')}
+        else
+        if(Phone.length>11)
+        {
+            alert("số điện thoại không đúng")
+        }else
+        if(userName=="")
+        {
+            alert("Họ tên không được để trống")
+        }
+        else
+        {
+
+        fetch('http://10.0.2.2:45455/api/users', {
+                method: 'PUT',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "id": value,
+                    "userName": this.state.obj.userName,
+                    "passWord": this.state.obj.userName,
+                    "hoTen": this.state.userName,
+                    "ngaySinh": this.state.obj.ngaySinh,
+                    "ngayNhap": this.state.obj.ngayNhap,
+                    "diaChi": this.state.obj.diaChi,
+                    "gioitinh": this.state.obj.gioitinh,
+                    "status": this.state.obj.status,
+                    "groudId": this.state.obj.groudId,
+                    "email": this.state.email,
+                    "phone": this.state.Phone,
+                    "xacthuc": this.state.obj.xacthuc
+                   
+                })
+                }).then((response) => response.json())
+                  .then((responseJson) => {
+                 if(responseJson.title =="Not Found" ) {
+                     alert("Không lưu được")
+                }
+                 else {
+                    this.props.navigation.goBack(); // works best when the goBack is async
+                }
+                }).catch((error) => {
+                  console.error(error);
+                });
+            }
+        }
+
 }
 
 const {height,width}= Dimensions.get('window')
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-    backgroundColor: '#F5FCFF',
-    position: 'relative'
-      },
-      xemay:{
-        resizeMode:'cover',
-        width: width/2-20 ,
-        height: 150 ,
-        marginRight:40
-      },
-    backgroud:{
-        height:500,
-        width:width,
-        borderBottomColor:'#000000',
-        borderBottomEndRadius:0.5
-    },
-    Cardtop :{
-        flex:1,
-        marginTop: 130,
-        marginLeft:10,
-        marginRight:8
-    },
-    Thumbnail:{
-        position: 'absolute',
-        alignItems:"center",
-        height:180,
-        left: 0,
-        right: 0,
-        width: width,
+        backgroundColor: 'white',
+        flexDirection: 'column',
     },
     logoContainer: {
         alignItems: 'center',
-        justifyContent: 'center',
         flex: 1
     },
     logo: {
         width: 192,
         height: 30,
-        marginTop:20
-
+        marginTop:40
     },
     title: {
-        color: '#00ff7f',
+        color: '#f7c744',
         fontSize: 18,
         textAlign: 'center',
         marginTop: 5,
@@ -157,21 +230,28 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        bottom: 20,
         height: 200,
         padding: 20,
+        marginLeft:12,
+        marginRight:12
         // backgroundColor: 'red'
     },
     input: {
         height: 45,
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        color: '#FFF',
+        backgroundColor: 'white',
+        color: 'black',
         marginBottom: 20,
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        borderBottomColor:'gray',
+        borderBottomWidth:0.4,
+
     },
     buttonContainer: {
         backgroundColor: '#f7c744',
         paddingVertical: 15
+        ,
+        justifyContent:'flex-end',
+        marginTop:20
     },
     buttonText: {
         textAlign: 'center',
@@ -179,41 +259,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 18
     },
+    Thumbnail:{
+        position: 'absolute',
+        alignItems:"center",
+        height:180,
+        left: 0,
+        right: 0,
+        width: width,
+    },
+}
+)
 
-    bodyleft:{
-        marginTop:8,
-        width:2/3*width
-    },
-    bodytext:{
-        fontSize:18
-    }
-    ,
-    kichhoat:{
-        color:'#4169e1',
-        fontSize:22,
-        paddingTop:10
-    },
-    imgtop:{
-        height:60,
-        width:100,
-        paddingTop:80
-    },
-    imagescroolview:{
-        height:450, 
-        borderRadius:20,
-        borderWidth:1,
-        width:250, 
-        marginLeft:20, 
-        borderColor: '#dddddd', 
-        backgroundColor:"white"
-    }
-    ,
-    imagesr:{
-        flex:1,
-         width:null, 
-         borderRadius:20,
-        height:120, 
-        resizeMode:'cover'
-    }
-
-})
