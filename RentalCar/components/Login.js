@@ -3,7 +3,8 @@ import {
     StyleSheet, Text, View, Image,
     TouchableWithoutFeedback, StatusBar,
     TextInput, SafeAreaView, Keyboard, TouchableOpacity,
-    KeyboardAvoidingView,
+    KeyboardAvoidingView, BackHandler
+
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage';
 export default class Login extends Component {
@@ -23,7 +24,7 @@ export default class Login extends Component {
     render() {
         return (
             <SafeAreaView style={styles.container}>
-                <StatusBar barStyle="light-content" />
+                <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true}/>
                 <KeyboardAvoidingView style={styles.container}>
                     <TouchableWithoutFeedback style={styles.container} 
                             onPress={Keyboard.dismiss}>
@@ -64,7 +65,7 @@ export default class Login extends Component {
             </SafeAreaView>
         )
     }
-    setValue = async () => {
+    setValue = async (id) => {
         try {
           await AsyncStorage.setItem('@MyApp2_key', this.state.userName)
         } catch(e) {
@@ -76,6 +77,7 @@ export default class Login extends Component {
       setValuenull = async () => {
         try {
           await AsyncStorage.setItem('@MyApp2_key', "")
+          await AsyncStorage.setItem('@MyApp2_key_id', "")
         } catch(e) {
           // save error
         }
@@ -85,13 +87,13 @@ export default class Login extends Component {
       getMyValue = async () => {
         try {
           const value = await AsyncStorage.getItem('@MyApp2_key');
-          alert(value)
+          alert(value )
         } catch(e) {
-          alert("khÃ´ng Ä‘á»c Ä‘Æ°á»£c");
+          alert("Không lưu data");
         }
       }
     Login= () =>{
-        fetch('http://192.168.1.14:45455/api/users', {
+        fetch('http://10.0.2.2:45455/api/users', {
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
@@ -106,11 +108,12 @@ export default class Login extends Component {
                  if(responseJson.title =="Not Found" ) {
                   this.setValuenull();
                   this.getMyValue();  
-
-                } else {
+                }
+                 else {
                     try{
-                        this.setValue();
-                        this.getMyValue();
+                         AsyncStorage.setItem('@MyApp2_key', responseJson.id.toString());
+                         AsyncStorage.setItem('@MyApp2_key_Username', this.state.userName);
+                         this.props.navigation.navigate('Home')
                     }
                     catch(error)
                     {

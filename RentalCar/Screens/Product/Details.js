@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 
-import { ListView,StatusBar, StyleSheet,Text,Image, View,SafeAreaView,TouchableHighlight,Dimensions,ScrollView, ImageBackground,TouchableOpacity, ActivityIndicator} from 'react-native';
+import { ListView,StatusBar,BackHandler, StyleSheet,Text,Image, View,SafeAreaView,TouchableHighlight,Dimensions,ScrollView, ImageBackground,TouchableOpacity, ActivityIndicator} from 'react-native';
 
 import { WebView } from 'react-native-webview';
 
@@ -32,11 +32,22 @@ export default class Details extends Component {
     }
     componentDidMount() {
       const {navigation} = this.props;
+      this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+
       this._fetchData();
       this._fetchNguoiDang();
       this._Bindding();
     }
-
+    
+    
+    componentWillUnmount() {
+      this.backHandler.remove()
+    }
+    
+    handleBackPress = () => {
+      this.props.navigation.goBack(); // works best when the goBack is async
+      return true;
+    }
 
 
     _fetchNguoiDang = () => {
@@ -47,7 +58,8 @@ export default class Details extends Component {
             this.setState ({
               obj: resopnseJson,
               phone:resopnseJson.phone,
-              email:resopnseJson.tenNguoiDang
+              email:resopnseJson.tenNguoiDang,
+              isloadding:false,
             })
 
             if(this.state.obj.length ==0)
@@ -59,7 +71,6 @@ export default class Details extends Component {
         .catch((error) => {
             console.error(error);
         });
-  
   }
 
   
@@ -68,7 +79,7 @@ export default class Details extends Component {
       .then((response) => response.json())
       .then((resopnseJson) => {
           this.setState ({
-            ngayNhap: resopnseJson.ngayNhap
+            ngayNhap: resopnseJson.ngayNhap,
           })
           
       })
@@ -86,7 +97,6 @@ export default class Details extends Component {
             this.setState ({
               carouselItems: resopnseJson,
              
-              isloadding:false,
 
             })
 
@@ -270,7 +280,7 @@ export default class Details extends Component {
       {
         <View style={{justifyContent:"center", flex:1}}>
           <ActivityIndicator size="large" color="#00ff00" paddingTop= {80}/>
-          </View>
+        </View>
       }
       return (
         <Container style={styles.container}>

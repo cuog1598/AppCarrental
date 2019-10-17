@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, List, ListItem, Thumbnail, Left, Body, Right, Button, Fab ,Card} from 'native-base';
-import {StyleSheet,Image, StatusBar, View, Text, TouchableOpacity, FlatList, ActivityIndicator,Dimensions,ImageBackground,ScrollView,ToastAndroid} from 'react-native'
+import {StyleSheet,Image,BackHandler, StatusBar, View, Text, TouchableOpacity, FlatList, ActivityIndicator,Dimensions,ImageBackground,ScrollView,ToastAndroid} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons';  
-
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Toast = (props) => {
   if (props.visible) {
@@ -38,8 +38,22 @@ export default class Cart extends Component {
 }
 
 componentDidMount(){
+  this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+
   this._GetAllcart();
 }
+
+
+componentWillUnmount() {
+  this.backHandler.remove()
+}
+
+handleBackPress = () => {
+  this.props.navigation.goBack(); // works best when the goBack is async
+  return true;
+}
+
+
 handleButtonPress = () => {
   this.setState(
     {
@@ -56,8 +70,9 @@ hideToast = () => {
   });
 };
 
-_GetAllcart = () => {
-  fetch('http://10.0.2.2:45455/api/CartPerUser/1')
+_GetAllcart = async () => {
+  const value =  await AsyncStorage.getItem('@MyApp2_key');
+  fetch('http://10.0.2.2:45455/api/CartPerUser/'+value)
     .then((response) => response.json())
     .then((resopnseJson) => {
         this.setState ({
@@ -95,7 +110,7 @@ _renderitem= ({item}) => {
            
               <TouchableOpacity onPress= {()=> this.Delete(item.id)}>
 
-                <Icon style={{fontWeight:'bold', color:'#7cfc00'}} name='ios-trash' size={30}/>
+                <Icon style={{fontWeight:'bold', color:'blue'}} name='ios-trash' size={30}/>
               </TouchableOpacity>
             </Right>
           </ListItem>

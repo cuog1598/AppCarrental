@@ -51,102 +51,52 @@ export default class MainComponent extends Component {
             releaseYear: 1977
         };    
         return (
-            <ScrollView style={styles.container}>
-        <View style={styles.backgroud}>
-        <StatusBar barStyle='dark-content' backgroundColor="transparent" translucent={true}/>
-        <Container>
+            <SafeAreaView>
+          <Container>
+
+            <View style={styles.backgroud}>
+               <StatusBar barStyle='dark-content' backgroundColor="transparent" translucent={true}/>
             <Content style={{paddingTop:0}}>
             <View>
-                <ImageBackground style={styles.Thumbnail} source={require('./images/backgroud/moto.jpg')}>
+               <ImageBackground style={styles.Thumbnail} source={require('./images/backgroud/moto.jpg')}>
                 <Image style={styles.logo} source={require('./images/logo.png')}>
-              </Image>
-              <Text style={styles.title}>{this.state.title2}</Text>
+                </Image>
+                    <Text style={styles.title}>{this.state.title2}</Text>
               </ImageBackground>
-              <Content padder style={styles.Cardtop}>
-          <Card style={{ borderRadius: 12 }}>
-            <CardItem bordered style={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
-            <Left style={styles.bodyleft}>
-              <Body style={styles.bodyleft}>
-                  <Text style={styles.bodytext}>
-                  Cho thuê xe ngay với RentalCar
-                </Text>
-                <TouchableOpacity>
-                  <Text style={styles.kichhoat}>
-                   Bắt đầu
-                  </Text>
-                </TouchableOpacity>
-              </Body>
-              </Left>
-              <Right>
-                <Body>
-                  <Thumbnail style={styles.imgtop} source={require('./images/images.jpg')}>
-                  </Thumbnail>
-                </Body>
-              </Right>
-            </CardItem>
-          </Card>
-        </Content>
-            </View>
-            <Content padder style={{borderBottomColor:'#000000'}}>
-          <Card transparent>
-            <CardItem>
-              <Left>
-              <Body>
-                  <TouchableOpacity onPress={() => {
-                        navigation.navigate("Search", {Id : 1});
-                    }}>
-
-                  <Icon name={'ios-car'} size={100} color="#00fa9a" backgroundColor="#0000cd"/>
-                  
-                </TouchableOpacity>
-                <Text style={{paddingLeft:5, fontSize:18}}>
-                    Xe Ô tô
-                </Text>
-                  </Body>
-              </Left>
-              <Right>
-                  <Body>
-                  <TouchableOpacity onPress={() => {
-                        navigation.navigate("Search",{Id: 2});
-                    }}>
-                  <Icon name={'ios-bicycle'} size={100} color="#00fa9a" backgroundColor="#0000cd"/>
-                  </TouchableOpacity>
-                  <Text style={{paddingLeft:5, fontSize:18}}>
-                    Xe máy
-                </Text>
-                  </Body>
-              </Right>
-            </CardItem>
-          </Card>
-        </Content>
-        </Content>
-
+                  <Content padder style={styles.Cardtop}>
+                   <Card style={{ borderRadius: 12 }}>
+                    <CardItem bordered style={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
+                       <Left style={styles.bodyleft}>
+                        <Body style={styles.bodyleft}>
+                            <Text style={styles.bodytext}>
+                               Cho thuê xe ngay với RentalCar
+                              </Text>
+                            <TouchableOpacity>
+                          <Text style={styles.kichhoat}>
+                               Bắt đầu
+                          </Text>
+                           </TouchableOpacity>
+                        </Body>
+                        </Left>
+                        <Right>
+                            <Body>
+                            <Thumbnail style={styles.imgtop} source={require('./images/images.jpg')}>
+                            </Thumbnail>
+                            </Body>
+                        </Right>
+                      </CardItem>
+                     </Card>
+                </Content>
+                    </View>
+                </Content>
+        </View>
         </Container>
-        
-        </View>
-        <Content style={{backgroundColor:'#f5f5dc',height:15}}>
 
-        </Content>
-        <View style={{ backgroundColor:"white", borderColor:"white"}}>
-            <View style={{paddingTop:15, paddingBottom:10, paddingLeft:25}}>
-                <Text style={{fontSize:22, fontWeight:"bold"}}>
-                    Sự kiện trong tuần
-                </Text>
-        </View>
-        <Envent style={{marginBottom:25}}/>
-
-
-       <Content style={{backgroundColor:'#f5f5dc',height:15, marginTop:25}}>
-
-        </Content>
-        <Content style={{height:50, marginTop:30}}>
-            <Text style={{textAlign:"center"}} >
-                RentalCar 2019
-            </Text>
-        </Content>
-        </View>
-        
+        <ScrollView>
+       
         </ScrollView>
+        </SafeAreaView>
+
         );
     }
 }

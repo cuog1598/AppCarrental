@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image ,StatusBar, ScrollView,Dimensions,StyleSheet,ImageBackground,TouchableOpacity,SafeAreaView, FlatList,ActivityIndicator} from 'react-native';
+import { Image ,StatusBar, ScrollView,Dimensions,StyleSheet,ImageBackground,TouchableOpacity,SafeAreaView, FlatList,ActivityIndicator,BackHandler} from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,  Left, Body, Right, View } from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';  
 const a= '../images/backgroud/white.jpg'
@@ -20,8 +20,18 @@ export default class CardImageExample extends Component {
 
     componentDidMount(){
         this._fetchUsers();
-    }
+      this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
 
+    }
+  
+    componentWillUnmount() {
+      this.backHandler.remove()
+    }
+  
+    handleBackPress = () => {
+      this.props.navigation.goBack(); // works best when the goBack is async
+      return true;
+    }
     _fetchUsers = () => {
         fetch('http://10.0.2.2:45455/api/getxe/'+this.props.navigation.state.params.key)
           .then((response) => response.json())
@@ -132,7 +142,9 @@ export default class CardImageExample extends Component {
                 }}>
                  <Icon style={{paddingLeft:10, paddingTop:10}} name='ios-heart-empty' size={30} />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>{
+                  navigate('History')
+                }}>
                   <Icon style={{paddingLeft:20, paddingTop:10}} name='md-book' size={30} />
                 </TouchableOpacity>
               </ScrollView>

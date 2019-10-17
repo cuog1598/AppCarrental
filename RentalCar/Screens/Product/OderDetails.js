@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 
-import {StatusBar, NumberFormat, FormattedNumber, ListView, TouchableOpacity, StyleSheet,Text,Image, View,SafeAreaView,TouchableHighlight,Dimensions,ScrollView, ImageBackground, ActivityIndicator} from 'react-native';
+import {StatusBar,BackHandler, NumberFormat, FormattedNumber, ListView, TouchableOpacity, StyleSheet,Text,Image, View,SafeAreaView,TouchableHighlight,Dimensions,ScrollView, ImageBackground, ActivityIndicator} from 'react-native';
 
 
 import { Container, Header, Content, Card, CardItem, Body, Left ,Button,Footer,DatePicker,Thumbnail} from "native-base";
@@ -22,7 +22,9 @@ export default class Seemore extends Component {
             IsLoadding: true,
             diachi:'',
             car:[],
-            tinhtrang:''
+            tinhtrang:'',
+            tungay:'',
+            denNgay:'',
         }
     }
     
@@ -30,16 +32,28 @@ export default class Seemore extends Component {
       this._GetAllcart();
       this._Bindding();
       this._Bindding2();
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+
     }
 
+  componentWillUnmount() {
+    this.backHandler.remove()
+  }
+
+  handleBackPress = () => {
+    this.props.navigation.goBack(); // works best when the goBack is async
+    return true;
+  }
+
     _GetAllcart = () => {
-      fetch('http://10.0.2.2:45455/api/Oders/14')
+      fetch('http://10.0.2.2:45455/api/Oders/'+this.props.navigation.state.params.mahd)
         .then((response) => response.json())
         .then((resopnseJson) => {
             this.setState ({
               obj: resopnseJson,
-              IsLoadding:false,
-              title : resopnseJson.maUs,
+              title : resopnseJson.ngayLap,
+              tungay:resopnseJson.tuNgay,
+              denNgay:resopnseJson.denNgay
             })
         if(this.state.obj.length=== 0)
         {
@@ -56,7 +70,7 @@ export default class Seemore extends Component {
 
    
     _Bindding = () => {
-        fetch('http://10.0.2.2:45455/api/getcar/1')
+        fetch('http://10.0.2.2:45455/api/getcar/'+this.props.navigation.state.params.maxe)
           .then((response) => response.json())
           .then((resopnseJson) => {
               this.setState ({
@@ -69,11 +83,12 @@ export default class Seemore extends Component {
     }
 
     _Bindding2 = () => {
-      fetch('http://10.0.2.2:45455/api/Oderstatus/14')
+      fetch('http://10.0.2.2:45455/api/Oderstatus/'+this.props.navigation.state.params.mahd)
         .then((response) => response.json())
         .then((resopnseJson) => {
           this.setState ({
-            tinhtrang:resopnseJson.tinhTrang
+            tinhtrang:resopnseJson.tinhTrang,
+            IsLoadding:false,
            })
            
         })
@@ -85,6 +100,8 @@ export default class Seemore extends Component {
     
     render() {
       const {navigation}=this.props; 
+      const tungay= this.state.tungay.toString().substr(0, 10)
+      const denNgay= this.state.denNgay.toString().substr(0, 10)
       if(this.state.isloadding)
       {
         return(
@@ -105,7 +122,13 @@ export default class Seemore extends Component {
       }
       else
       {
+      const ngay = this.state.title.toString().substr(8, 2)
+      const thang= this.state.title.toString().substr(5,2)
+      const nam= this.state.title.toString().substr(0,4);
+      const time= this.state.title.toString().substr(11,5)
+      const title2= ngay+' THG ' + thang +', '+nam +' '+time
       return (
+        
         <Container>
             <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent={true}/>
             <View style={styles.container}>
@@ -117,9 +140,9 @@ export default class Seemore extends Component {
                   <TouchableOpacity onPress={() => {
                               navigation.goBack()
                           }}>
-                    <Icon style={{paddingLeft:20, paddingTop:20, fontWeight:'bold'}} name='ios-arrow-back' size={30}/>
+                    <Icon style={{paddingLeft:27, paddingTop:20, fontWeight:'bold'}} name='ios-arrow-back' size={30}/>
                   </TouchableOpacity>
-                  <Text style= {{fontSize:20, textAlign:"center", paddingTop:15, paddingLeft:30}}>{this.state.obj.ngayLap}</Text>
+                  <Text style= {{fontSize:20, textAlign:"center", paddingTop:20, paddingLeft:30}}>{title2}</Text>
                 </ScrollView>
 
               </View>
@@ -127,14 +150,14 @@ export default class Seemore extends Component {
                 <View style={{height:0.8, backgroundColor:'gray'}}>
                 </View>
               </View>
-              <ScrollView style={{paddingTop:10}}>
-                <View style={{flexDirection: 'row',paddingLeft: 10}}>
-                 <View style={{paddingTop:10, marginLeft:5, marginRight:5, flex:0.8}}>
+              <ScrollView style={{paddingTop:10}} showsVerticalScrollIndicator={false}>
+                <View style={{flexDirection: 'row',paddingLeft: 10, height:20, alignItems:'center', marginBottom:8}}>
+                 <View style={{paddingTop:12, marginLeft:5, marginRight:5, flex:0.7}}>
                     <Text style={{color:'gray'}}>Mã yêu cầu</Text>
                   </View>
 
-                  <View style={{paddingTop:10, marginLeft:5, marginRight:5, flex:0.2}}>
-                    <Text style={{color:'gray'}}>PHD 000</Text>
+                  <View style={{paddingTop:10, marginLeft:5, marginRight:5, flex:0.3}}>
+                    <Text style={{color:'gray'}}>PHD 00Ơ{this.state.obj.id}</Text>
                   </View>
                 </View>
                 <View>
@@ -146,8 +169,8 @@ export default class Seemore extends Component {
                       <Thumbnail style={{backgroundColor:'yellow'}} source={require('../images/backgroud/motoDraw.png')} />
                       </View>
                       <View style={{paddingTop:10, marginLeft:5, marginRight:5, flex:0.8}}>
-                        <Text>{this.state.car.tenxe}</Text>
-                        <Text>{this.state.tinhtrang}</Text>
+                        <Text style={styles.TextCardItem}>{this.state.car.tenxe}</Text>
+                        <Text style={styles.TextItem}>{this.state.tinhtrang}</Text>
                       </View>
                     </View>
                     </Body>
@@ -159,15 +182,86 @@ export default class Seemore extends Component {
                     <Body>
                     <View style={{flexDirection: 'row',paddingLeft: 10}}>
                       <View style={{paddingTop:10, marginLeft:5, marginRight:5, flex:0.2}}>
-                        <Icon style={{fontWeight:'bold',color:'blue'}} name='ios-locate' size={30}/>
+                        <Icon style={{fontWeight:'bold',color:'blue'}} name='ios-code' size={30}/>
+                        <Icon style={{fontWeight:'bold',color:'blue'}} name='ios-more' size={30}/>
+                        <Icon style={{fontWeight:'bold',color:'blue', paddingLeft:2}} name='ios-checkmark' size={35}/>
                       </View>
-                      <View style={{paddingTop:10, marginLeft:5, marginRight:5, flex:0.8}}>
-                        <Text>{this.state.car.diachi}</Text>
+                      <View style={{paddingTop:14, marginLeft:5, marginRight:5, flex:0.8}}>
+                        <Text style={styles.TextCardItem}>{tungay}</Text>
+                        <Text style={styles.TextCardItem}></Text>
+                        <Text style={styles.TextCardItem}>{denNgay}</Text>
                       </View>
                     </View>
                     </Body>
                   </CardItem>
                 </Card>
+
+                <Card transparent>
+                  <CardItem>
+                    <Body>
+                    <View>
+                      <Text style={styles.TextHeader}>Tóm tắt yêu cầu</Text>
+                      </View>
+                    <View style={{flexDirection: 'row',paddingLeft: 10, paddingBottom:5}}>
+                      <View style={{ marginLeft:5, marginRight:5, flex:0.3}}>
+                        <Text style={styles.TextCardItem2}>Tên xe</Text>
+                        <Text style={styles.TextCardItem2}>Loại xe</Text>
+                        <Text style={styles.TextCardItem2}>Chủ xe</Text>
+                        <Text style={styles.TextCardItem2}>Địa chỉ nhận</Text>
+                      </View>
+                      <View style={{ marginLeft:5, marginRight:5, flex:0.7}}>
+                      <Text style={styles.TextCardItem2}>{this.state.car.tenxe}</Text>
+                      <Text style={styles.TextCardItem2}>{this.state.car.loaiXe}</Text>
+                      <Text style={styles.TextCardItem2}>{this.state.car.tenNguoiDang}</Text>
+                      <Text style={styles.TextCardItem2}>{this.state.car.diachi}</Text>
+                      </View>
+                    </View>
+                    </Body>
+                  </CardItem>
+                </Card>
+                <Card transparent>
+                  <CardItem>
+                    <Body>
+                      
+                    <View style={{flexDirection: 'row',paddingLeft: 10, paddingBottom:5}}>
+                      <View style={{ marginLeft:5, marginRight:5, flex:0.3}}>
+
+                        <Text style={styles.TextCardItem2}>Số ngày</Text>
+                        <Text style={styles.TextCardItem2}>Tiền cọc</Text>
+                        <Text style={styles.TextCardItem2}>Giá thuê</Text>
+                      </View>
+                      <View style={{ marginLeft:5, marginRight:5, flex:0.7}}>
+                        <Text style={styles.TextCardItem2}>{this.state.obj.songay}</Text>
+                        <Text style={styles.TextCardItem2}>2.500.000 đ</Text>
+                        <Text style={styles.TextCardItem2}>{this.state.obj.tongTien} đ</Text>
+                      </View>
+                    </View>
+                    </Body>
+                  </CardItem>
+                </Card>
+                <Card transparent>
+                  <CardItem>
+                    <Body>
+                    <View style={{flexDirection: 'row', paddingBottom:5}}>
+                      <View style={{marginRight:5, flex:0.7}}>
+                        <Text style={styles.TextHeader}>Tổng cộng</Text>
+                      </View>
+                      <View style={{  marginRight:5, flex:0.1}}>
+                      <Icon style={{fontWeight:'bold'}} name='ios-aperture' size={30}/>
+                      </View>
+                      <View style={{ marginRight:5, flex:0.3}}>
+                          <Text style={styles.TextHeader}>{this.state.obj.tongTien} đ</Text>
+                      </View>
+                    </View>
+                    </Body>
+                  </CardItem>
+                </Card>
+
+                <Content padder style={{marginBottom:20}}>
+                  <Button block info style={{height:60, borderRadius:8}}>
+                        <Text style={{color:'white', fontSize:20, fontWeight:'bold'}}>Liên hệ với chủ xe</Text>
+                      </Button>
+                </Content>
 
                 </View>
                   
@@ -275,8 +369,8 @@ const styles = StyleSheet.create({
     },
         TextHeader : {
         paddingTop:1,
-        fontWeight:'bold',
-        fontSize:20,
+        fontWeight:'300',
+        fontSize:18,
         fontFamily:'time new roman',
         },
         textdefault:{
@@ -319,5 +413,14 @@ const styles = StyleSheet.create({
         TextCardItem : {
           fontSize :18,
           marginTop:2
+        },
+        TextItem:{
+          color:'#ff794d',
+          fontSize:18
+        },
+        TextCardItem2:{
+          fontSize:17,
+          marginTop:4,
+          color:'#2f4f4f'
         }
 })

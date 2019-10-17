@@ -1,7 +1,8 @@
-
+import React, { Component } from 'react'
+import { StyleSheet, Text, View, Image, StatusBar} from 'react-native'
 import MainComponent from './components/MainComponent';
-import DetailComponent from './components/DetailComponent';
-import ThirdComponent from './components/ThirdComponent';
+import DetailComponent from './components/Mail';
+import ThirdComponent from './components/Account';
 import Login from './components/Login';
 import Home from './Screens/Home';
 import Search from './Screens/Product/Search';
@@ -11,6 +12,8 @@ import SeeMore from './Screens/Product/Seemore';
 import Oders from './Screens/Product/Oders'
 import Cart from './Screens/Product/Cart'
 import History from './Screens/Product/History'
+import OderDetails from'./Screens/Product/OderDetails'
+import Splash from './components/Splash'
 //Screen names
 
 import {createAppContainer} from 'react-navigation';
@@ -20,26 +23,50 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 import Icon from 'react-native-vector-icons/Ionicons';  
 import Block from './components/Block';
 
-import React from 'react';  
-import {StyleSheet, Text, View,Button} from 'react-native';  
+
+import AsyncStorage from '@react-native-community/async-storage';
+
+class Main extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { currentScreen: 'Splash' };
+       
+    }
+   
+    componentDidMount(){
+        setTimeout(() => {
+      this._bootstrapAsync();
+        }, 500);
+    }
+      
+    render() {
+        return(
+            <Splash/>
+        );
+    }
+
+    
+      // Fetch the token from storage then navigate to our appropriate place
+      _bootstrapAsync = async () => {
+        const value =  await AsyncStorage.getItem('@MyApp2_key');
+    
+        // This will switch to the App screen or Auth screen and this loading
+        // screen will be unmounted and thrown away.
+        if(value == null || value == '')
+        {
+            this.props.navigation.navigate('Login');
+        }
+        else
+        {
+            this.props.navigation.navigate('Home');
+
+        }
+      };
+      
+    }
 
 
-
-
-const customTextButton = (
-    <Icon.Button name="facebook" backgroundColor="#3b5998">
-      <Text style={{ fontFamily: 'Arial', fontSize: 15 }}>
-        Login with Facebook
-      </Text>
-    </Icon.Button>
-  );
-const styles = StyleSheet.create({  
-    container: {  
-        flex: 1,  
-        justifyContent: 'center',  
-        alignItems: 'center'  
-    },  
-});  
+ 
 const TabNavigator = createMaterialBottomTabNavigator(  
     {  
         Home: { screen: Home,  
@@ -48,36 +75,38 @@ const TabNavigator = createMaterialBottomTabNavigator(
                 tabBarIcon: ({ tintColor }) => (  
                     <View>  
                         <Icon style={[{color: tintColor}]} size={25} name={'ios-home'}/>  
-                    </View>),  
+                    </View>
+                    ),  
+                    
             }  
         },  
-        Profile: { screen: MainComponent,  
+        HoatDong: { screen: MainComponent,  
             navigationOptions:{  
-                tabBarLabel:'Profile',  
+                tabBarLabel:'Hoạt động',  
                 tabBarIcon: ({ tintColor }) => (  
                     <View>  
-                        <Icon style={[{color: tintColor}]} size={25} name={'ios-person'}/>  
+                        <Icon style={[{color: tintColor}]} size={25} name={'ios-journal'}/>  
                     </View>),  
                 
             }  
         },  
-        Image: { screen: DetailComponent,  
+        Mails: { screen: DetailComponent,  
             navigationOptions:{  
-                tabBarLabel:'History',  
+                tabBarLabel:'Hộp thư',  
                 tabBarIcon: ({ tintColor }) => (  
                     <View>  
-                        <Icon style={[{color: tintColor}]} size={25} name={'ios-images'}/>  
+                        <Icon style={[{color: tintColor}]} size={25} name={'ios-mail'}/>  
                     </View>),  
                
             }  
         },  
-        Cart: {  
+        Account: {  
             screen: ThirdComponent,  
             navigationOptions:{  
-                tabBarLabel:'Cart',  
+                tabBarLabel:'Tài khoản',  
                 tabBarIcon: ({ tintColor }) => (  
                     <View>  
-                        <Icon style={[{color: tintColor}]} size={25} name={'ios-cart'}/>  
+                        <Icon style={[{color: tintColor}]} size={25} name={'ios-person'}/>  
                     </View>),  
             }  
         },  
@@ -94,12 +123,16 @@ const TabNavigator = createMaterialBottomTabNavigator(
 
 const Appnavigator2= createStackNavigator(
     {
-       // Login:{screen:Login,
-      //      navigationOptions:{
-     //         header:null,
-     //       }
-    //    },
-            
+        AuthLoading:{screen:Main, navigationOptions: {
+            header:null,
+            backgroundColor:"white"    
+        }},
+        Login:{
+            screen:Login, navigationOptions: {
+                header:null,
+                backgroundColor:"white"    
+            }
+        }, 
         Home: {screen: TabNavigator,
         navigationOptions:{
           header:null,
@@ -136,11 +169,18 @@ const Appnavigator2= createStackNavigator(
         History: {screen:History, navigationOptions:{
             header:null,
         }},
+        OderDetails: {screen:OderDetails, navigationOptions:{
+            header:null,
+        }},
         block: {screen: Block},
     },
     {
+        initialRouteName: 'AuthLoading',
     },
 
   );
+
+ 
+
 
 export default createAppContainer(Appnavigator2)

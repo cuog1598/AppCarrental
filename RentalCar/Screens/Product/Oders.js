@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 
-import {StatusBar, NumberFormat, FormattedNumber, ListView, TouchableOpacity, StyleSheet,Text,Image, View,SafeAreaView,TouchableHighlight,Dimensions,ScrollView, ImageBackground, ActivityIndicator} from 'react-native';
+import {StatusBar,BackHandler, NumberFormat, FormattedNumber, ListView, TouchableOpacity, StyleSheet,Text,Image, View,SafeAreaView,TouchableHighlight,Dimensions,ScrollView, ImageBackground, ActivityIndicator} from 'react-native';
 
 
 import { Container, Header, Content, Card, CardItem, Body, Icon, Left ,Button,Footer,DatePicker} from "native-base";
@@ -27,6 +27,7 @@ export default class Seemore extends Component {
             disabled:true,
             chosenDate: new Date() ,
             chosenDateTo: new Date() ,
+            date: new Date(),
             totalDay :0,
             gia :'',
             tongcong :'',
@@ -56,8 +57,18 @@ export default class Seemore extends Component {
     componentDidMount() {
         this._fetchNguoiDang();
         this._Bindding();
-    }
+         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
 
+    }
+ 
+  componentWillUnmount() {
+    this.backHandler.remove()
+  }
+
+  handleBackPress = () => {
+    this.props.navigation.goBack(); // works best when the goBack is async
+    return true;
+  }
 
     _fetchNguoiDang = () => {
         fetch('http://10.0.2.2:45455/api/Users/1')
@@ -89,7 +100,7 @@ export default class Seemore extends Component {
                   car : resopnseJson,
                   diachi: resopnseJson.diachi,
                   gia : resopnseJson.gia,
-                  isloadding:false
+                  isloadding:false,
               })
           })
           .catch((error) => {
@@ -311,9 +322,9 @@ export default class Seemore extends Component {
         body: JSON.stringify({
           "maXe": this.props.navigation.state.params.maxe,
           "maUs": 1,
-          "ngayLap": new Date(),
-          "tuNgay": this.state.chosenDate,
-          "denNgay": this.state.chosenDateTo,
+          "ngayLap": this.state.date,
+          "tuNgay": this.state.chosenDate.toString().substr(0,10),
+          "denNgay": this.state.chosenDateTo.toString().substr(0,10),
           "tinhTrangThanhToan": null,
           "status": true,
           "songay": this.state.totalDay/(1000 * 60 * 60 * 24),
@@ -321,7 +332,7 @@ export default class Seemore extends Component {
           "giamgia": null,
           "huy": false,
           "xacnhan": null,
-          "TenXe" : this.state.TenXe,
+          "TenXe" : this.state.car.tenxe,
           "DiaCHi" : this.state.diachi,
         })
         }).then((response) => response.json())

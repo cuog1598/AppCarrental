@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
-    Text, View,Image
+    Text, View,Image, BackHandler
 } from 'react-native';
 
-export default class MainComponent extends Component {    
+export default class MainComponent extends Component {   
+  
 
     render() {   
       return(

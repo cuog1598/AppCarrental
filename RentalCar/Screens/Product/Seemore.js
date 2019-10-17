@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 
-import { ListView, TouchableOpacity, StyleSheet,Text,Image, View,SafeAreaView,TouchableHighlight,Dimensions,ScrollView, ImageBackground, ActivityIndicator} from 'react-native';
+import { ListView, TouchableOpacity,BackHandler, StyleSheet,Text,Image, View,SafeAreaView,TouchableHighlight,Dimensions,ScrollView, ImageBackground, ActivityIndicator} from 'react-native';
 
 
 import { Container, Header, Content, Card, CardItem, Body, Icon, Left ,Button,Footer, FooterTab} from "native-base";
@@ -30,6 +30,19 @@ export default class Seemore extends Component {
     }
     componentDidMount() {
       this._fetchData();
+      this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+
+    }
+
+
+  
+    componentWillUnmount() {
+      this.backHandler.remove()
+    }
+  
+    handleBackPress = () => {
+      this.props.navigation.goBack(); // works best when the goBack is async
+      return true;
     }
     _fetchData = () => {
       //this.props.navigation.state.params.key

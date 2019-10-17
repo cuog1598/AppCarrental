@@ -4,7 +4,6 @@ import {StyleSheet,BackHandler, Image, StatusBar, View, Text, TouchableOpacity, 
 import Icon from 'react-native-vector-icons/Ionicons'; 
 import AsyncStorage from '@react-native-community/async-storage';
 import Moment from 'moment';
-import Headered from '../Components/Header'
 export default class ListAvatarExample extends Component {
   constructor(props){
     super(props);
@@ -90,25 +89,10 @@ return true;
     {
       return(
         <Container>
-        <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent={true}/>
-            <View style={styles.container}>
-              <Headered Titile='Lịch sử hoạt động'/>
-              <View>
-         <Image style={{justifyContent:'center', position:'absolute', width:width, height:200, marginTop:150, backgroundColor:'transparent'}} 
-        source={require('../images/backgroud/poro.png')}> 
-
-         </Image>
-          <Text style={{marginTop:400, fontSize:20, fontWeight:'bold', textAlign:"center",color:'gray'}}>Opp!{"\n"} Không tìm thấy kết quả nào   </Text>
-        </View>
-        </View>
-      </Container>
-      )
-    }
-    return (
-      <Container>
 
         <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent={true}/>
             <View style={styles.container}>
+
               <View style={styles.Thumbnail}>
               <ImageBackground style={styles.Thumbnail} source={require('../images/backgroud/white.jpg')}>
                 <View
@@ -134,20 +118,44 @@ return true;
               <View style={{height:0.8, backgroundColor:'gray'}}>
               </View>
               </View>
-              <Content style={{paddingTop:10}}>
-              <List>
-                <FlatList 
-                  data={this.state.obj}
-                  renderItem={this._renderitem}
-                  showsVerticalScrollIndicator={false}
-                  keyExtractor={() => Math.random().toString(36).substr(2, 9)}
-                >
-                </FlatList>
-            </List>
+              <View>
+         <Image style={{justifyContent:'center', position:'absolute', width:width, height:200, marginTop:150, backgroundColor:'transparent'}} 
+        source={require('../images/backgroud/poro.png')}> 
 
-        </Content>
+         </Image>
+          <Text style={{marginTop:400, fontSize:20, fontWeight:'bold', textAlign:"center",color:'gray'}}>Opp!{"\n"} Không tìm thấy kết quả nào   </Text>
+
         </View>
+        
+        </View>
+
       </Container>
+      )
+    }
+    return (
+        <View style={styles.Thumbnail}>
+           <ImageBackground style={styles.Thumbnail} source={require('../images/backgroud/white.jpg')}>
+            <View style={{
+              flexDirection: 'row',
+                paddingLeft: 10,
+              paddingTop:20,
+              justifyContent:'center'
+                  }}>
+              <View style={{flex: 0.1}}>
+              <TouchableOpacity onPress={() => {
+                            this.props.action
+                      }}>
+                <Icon style={{paddingLeft:20, paddingTop:20, fontWeight:'bold'}} name='ios-arrow-back' size={30}/>
+              </TouchableOpacity>
+              </View>
+              <View style={{flex: 0.9}}>
+               <Text style= {{fontSize:20, paddingTop:20, paddingLeft:40,}}>{this.props.Titile}</Text>
+              </View>
+            </View>
+              </ImageBackground>
+              <View style={{height:0.8, backgroundColor:'gray'}}>
+              </View>
+        </View>
     );
   }
 }

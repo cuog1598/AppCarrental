@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Text, View,ScrollView
+    Text, View,ScrollView,BackHandler
 } from 'react-native';
 import Button from 'react-native-button';
 import Horizontal from '../Screens/Components/Horizontal'
@@ -8,12 +8,7 @@ import Event from '../Screens/Envent'
 export default class DetailComponent extends Component {
 
   
-    componentDidMount(){
-        
-   //     console.log(`this.props.navigation = ${JSON.stringify(this.props.navigation.name)}`);
-     
-
-    }
+    
     
     render() {        
       
