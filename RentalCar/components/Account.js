@@ -3,6 +3,7 @@ import {StyleSheet,BackHandler, Image, StatusBar, View, Text, TouchableOpacity, 
 import { Container, Header, Content, List, ListItem, Left, Right ,Thumbnail,Body} from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';  
 import AsyncStorage from '@react-native-community/async-storage';
+import { thisExpression } from '@babel/types';
 
 export default class ListItemSelectedExample extends Component {
   constructor(props){
@@ -15,9 +16,18 @@ export default class ListItemSelectedExample extends Component {
 }
 async componentDidMount()
 {
-  this._User();
+  
+  this.willFocusSubscription = this.props.navigation.addListener(
+    'willFocus',
+    () => {
+      this._User();
+    }
+  );
 }
 
+componentWillUnmount() {
+  this.willFocusSubscription.remove();
+}
 _User = async () => {
   const value = await AsyncStorage.getItem('@MyApp2_key');
   fetch('http://10.0.2.2:45455/api/Users/'+value)
@@ -25,7 +35,7 @@ _User = async () => {
     .then((resopnseJson) => {
      
         this.setState ({
-          Username: resopnseJson.userName,
+          Username: resopnseJson.hoTen,
         })
     })
     .catch((error) => {
@@ -106,12 +116,14 @@ _User = async () => {
                   <Icon style={{paddingTop:2}} name='ios-arrow-forward'  size={20}/>
                 </Right>
               </ListItem >
-              <ListItem style={styles.ListItem} selected>
+              <ListItem style={styles.ListItem} selected onPress={() => {
+                              this.props.navigation.navigate("MainSeller")
+                          }}>
               <Left>
                   <Text style={styles.TextCardItem}>Quản lý xe</Text>
                 </Left>
                 <Right>
-                 <Icon style={{paddingTop:2}}  name='ios-arrow-forward'  size={20}/>
+                 <Icon style={{paddingTop:2}}  name='ios-arrow-forward'  size={20} />
                 </Right>
               </ListItem>
               <ListItem style={styles.ListItem} selected>

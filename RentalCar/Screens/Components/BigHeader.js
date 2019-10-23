@@ -17,8 +17,6 @@ export default class BigHeader extends Component {
 componentDidMount()
 {
 }
-
-
   render() {
     return (
         <View>

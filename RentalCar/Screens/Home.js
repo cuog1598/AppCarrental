@@ -53,7 +53,7 @@ export default class MainComponent extends Component {
         return (
             <ScrollView style={styles.container}>
         <View style={styles.backgroud}>
-        <StatusBar barStyle='dark-content' backgroundColor="transparent" translucent={true}/>
+         <StatusBar barStyle='light-content' backgroundColor="transparent" translucent={true}/>
         <Container>
             <Content style={{paddingTop:0}}>
             <View>

@@ -1,0 +1,6 @@
+{
+    "name": "RentalCar",
+    "displayName": "RentalCar",
+    "HostName": "http://10.0.2.2:45455/",
+    "WebHost" :"http://10.0.2.2:45457"
+  }

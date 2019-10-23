@@ -15,6 +15,11 @@ import History from './Screens/Product/History'
 import OderDetails from'./Screens/Product/OderDetails'
 import Splash from './components/Splash'
 import UserDetails from './Screens/Account/EditAccount';
+import MainSeller from './Screens/Seller/Main'
+import Tab1 from './Screens/Seller/Main'
+import Tab2 from './Screens/Seller/Tab1'
+import Tab3 from './Screens/Seller/Tab2'
+import SellerProduct from './Screens/Seller/SellerProduct'
 //Screen names
 
 import {createAppContainer} from 'react-navigation';
@@ -67,9 +72,10 @@ class Main extends Component {
     }
 
 
- 
+const  badgeCount = 3
 const TabNavigator = createMaterialBottomTabNavigator(  
     {  
+        
         Home: { screen: Home,  
             navigationOptions:{  
                 tabBarLabel:'Home',  
@@ -97,6 +103,25 @@ const TabNavigator = createMaterialBottomTabNavigator(
                 tabBarIcon: ({ tintColor }) => (  
                     <View>  
                         <Icon style={[{color: tintColor}]} size={25} name={'ios-mail'}/>  
+                        {badgeCount > 0 && (
+                        <View
+                            style={{
+                            position: 'absolute',
+                            right: -6,
+                            top: -3,
+                            backgroundColor: 'red',
+                            borderRadius: 6,
+                            width: 12,
+                            height: 12,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            }}
+                        >
+                            <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>
+                            {badgeCount}
+                            </Text>
+                        </View>
+                        )}
                     </View>),  
                
             }  
@@ -121,6 +146,49 @@ const TabNavigator = createMaterialBottomTabNavigator(
     },  
 );  
   
+const TabNavigator2 = createMaterialBottomTabNavigator(  
+    {  
+        
+        SellerMain: { screen: Tab1,  
+            navigationOptions:{  
+                tabBarLabel:'Home',  
+                tabBarIcon: ({ tintColor }) => (  
+                    <View>  
+                        <Icon style={[{color: tintColor}]} size={25} name={'ios-home'}/>  
+                    </View>
+                    ),  
+                    
+            }  
+        },  
+        SellerHoatDong: { screen: Tab2,  
+            navigationOptions:{  
+                tabBarLabel:'Hoạt động',  
+                tabBarIcon: ({ tintColor }) => (  
+                    <View>  
+                        <Icon style={[{color: tintColor}]} size={25} name={'ios-journal'}/>  
+                    </View>),  
+                
+            }  
+        },  
+        SellerAccount: {  
+            screen: Tab3,  
+            navigationOptions:{  
+                tabBarLabel:'Tài khoản',  
+                tabBarIcon: ({ tintColor }) => (  
+                    <View>  
+                        <Icon style={[{color: tintColor}]} size={25} name={'ios-person'}/>  
+                    </View>),  
+            }  
+        },  
+     
+    },  
+    {  
+      initialRouteName: "SellerMain",  
+      activeColor: '#008000',  
+      inactiveColor: '#a9a9a9',  
+      barStyle: { backgroundColor: '#ffffff' },  
+    },  
+);  
 
 const Appnavigator2= createStackNavigator(
     {
@@ -175,6 +243,12 @@ const Appnavigator2= createStackNavigator(
         }},
         UserDetails: {screen:UserDetails, navigationOptions:{
             header:null,
+        }},
+        MainSeller: {screen:MainSeller, navigationOptions:{
+            
+        }},
+        SellerProduct: {screen:SellerProduct, navigationOptions:{
+            
         }},
         block: {screen: Block},
     },
