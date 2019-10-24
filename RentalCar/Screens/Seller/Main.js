@@ -156,7 +156,7 @@ export default class FABExample extends Component {
                     name={'md-bicycle'}
                     style={{color: '#ff6347'}}
                     onPress={() => {
-                      this.props.navigation.navigate("SellerProduct", {LoaiXe : "XeMay"});
+                      this.props.navigation.navigate("SellerProduct", {LoaiXe : "1"});
                   }}
                   />
                 </View>
@@ -169,6 +169,9 @@ export default class FABExample extends Component {
                     size={width * 0.2}
                     name={'md-car'}
                     style={{color: 'green'}}
+                    onPress={() => {
+                      this.props.navigation.navigate("SellerProduct", {LoaiXe : "2"});
+                  }}
                   />
                 </View>
                 <Text style={styles.IconText}>Xe Hơi</Text>
@@ -179,6 +182,7 @@ export default class FABExample extends Component {
                     size={width * 0.2}
                     name={'md-notifications-outline'}
                     style={{color: '#daa520'}}
+                    
                   />
                   {this.state.Mail > 0 && (
                     <View style={styles.Badge}>

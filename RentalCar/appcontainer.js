@@ -17,9 +17,9 @@ import Splash from './components/Splash'
 import UserDetails from './Screens/Account/EditAccount';
 import MainSeller from './Screens/Seller/Main'
 import Tab1 from './Screens/Seller/Main'
-import Tab2 from './Screens/Seller/Tab1'
-import Tab3 from './Screens/Seller/Tab2'
+
 import SellerProduct from './Screens/Seller/SellerProduct'
+import CarDetails from './Screens/Seller/CarDetails'
 //Screen names
 
 import {createAppContainer} from 'react-navigation';
@@ -146,49 +146,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
     },  
 );  
   
-const TabNavigator2 = createMaterialBottomTabNavigator(  
-    {  
-        
-        SellerMain: { screen: Tab1,  
-            navigationOptions:{  
-                tabBarLabel:'Home',  
-                tabBarIcon: ({ tintColor }) => (  
-                    <View>  
-                        <Icon style={[{color: tintColor}]} size={25} name={'ios-home'}/>  
-                    </View>
-                    ),  
-                    
-            }  
-        },  
-        SellerHoatDong: { screen: Tab2,  
-            navigationOptions:{  
-                tabBarLabel:'Hoạt động',  
-                tabBarIcon: ({ tintColor }) => (  
-                    <View>  
-                        <Icon style={[{color: tintColor}]} size={25} name={'ios-journal'}/>  
-                    </View>),  
-                
-            }  
-        },  
-        SellerAccount: {  
-            screen: Tab3,  
-            navigationOptions:{  
-                tabBarLabel:'Tài khoản',  
-                tabBarIcon: ({ tintColor }) => (  
-                    <View>  
-                        <Icon style={[{color: tintColor}]} size={25} name={'ios-person'}/>  
-                    </View>),  
-            }  
-        },  
-     
-    },  
-    {  
-      initialRouteName: "SellerMain",  
-      activeColor: '#008000',  
-      inactiveColor: '#a9a9a9',  
-      barStyle: { backgroundColor: '#ffffff' },  
-    },  
-);  
+
 
 const Appnavigator2= createStackNavigator(
     {
@@ -250,6 +208,10 @@ const Appnavigator2= createStackNavigator(
         SellerProduct: {screen:SellerProduct, navigationOptions:{
             
         }},
+        SellerCarDetails: {screen:CarDetails, navigationOptions:{
+            
+        }},
+       
         block: {screen: Block},
     },
     {

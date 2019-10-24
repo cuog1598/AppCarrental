@@ -33,7 +33,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {HostName} from '../Models.json';
 import {WebHost} from '../Models.json';
-import {navi} from 'react-navigation';
+
 
 export const CustomNavButton = () => {
   return (
@@ -54,6 +54,9 @@ export default class FABExample extends Component {
       isLoadding: true,
       Mail: 1,
       obj: [],
+      Caractive: [],
+      CarNotactive: [],
+      XeDangThue: [],
     };
   }
 
@@ -70,16 +73,15 @@ export default class FABExample extends Component {
     headerStyle: {
       backgroundColor: 'white',
       height: 90,
-      borderBottomWidth:0,
-      borderBottomColor:'white',
+      borderBottomWidth: 0,
+      borderBottomColor: 'white',
       shadowOpacity: 0,
       shadowOffset: {
         height: 0,
       },
-      shadowColor :'white',
+      shadowColor: 'white',
       shadowRadius: 0,
-      elevation: 0
-      
+      elevation: 0,
     },
     headerLeft: (
       <Icon
@@ -100,7 +102,9 @@ export default class FABExample extends Component {
 
   componentDidMount() {
     this._GetCar();
-   
+    this._GetCarActive();
+    this._GetCarNotActive();
+    this._ChuaDuyet();
   }
   _GetCar = async () => {
     const value = await AsyncStorage.getItem('@MyApp2_key');
@@ -115,7 +119,6 @@ export default class FABExample extends Component {
       .then(resopnseJson => {
         this.setState({
           obj: resopnseJson,
-          isLoadding: false,
         });
         if (this.state.obj.length === 0) {
           this.setState({
@@ -129,8 +132,75 @@ export default class FABExample extends Component {
       });
   };
 
+  _GetCarActive = async () => {
+    const value = await AsyncStorage.getItem('@MyApp2_key');
+    fetch(
+      HostName +
+        'api/SellerCar/' +
+        value +
+        '?Loai=' +
+        this.props.navigation.state.params.LoaiXe +
+        '&type=' +
+        'active',
+    )
+      .then(response => response.json())
+      .then(resopnseJson => {
+        this.setState({
+          Caractive: resopnseJson,
+        });
+      })
+      .catch(error => {
+        alert(error);
+      });
+  };
+
+  _GetCarNotActive = async () => {
+    const value = await AsyncStorage.getItem('@MyApp2_key');
+    fetch(
+      HostName +
+        'api/SellerCar/' +
+        value +
+        '?Loai=' +
+        this.props.navigation.state.params.LoaiXe +
+        '&type=' +
+        'Notactive',
+    )
+      .then(response => response.json())
+      .then(resopnseJson => {
+        this.setState({
+          CarNotactive: resopnseJson,
+        });
+      })
+      .catch(error => {
+        alert(error);
+      });
+  };
+  _ChuaDuyet = async () => {
+    const value = await AsyncStorage.getItem('@MyApp2_key');
+    fetch(
+      HostName +
+        'api/SellerCar/' +
+        value +
+        '?Loai=' +
+        this.props.navigation.state.params.LoaiXe +
+        '&type=' +
+        'chuaduyet',
+    )
+      .then(response => response.json())
+      .then(resopnseJson => {
+        this.setState({
+          XeDangThue: resopnseJson,
+          isLoadding: false,
+        });
+      })
+      .catch(error => {
+        alert(error);
+      });
+  };
+
   _renderitem = ({item}) => {
     const {navigate} = this.props.navigation;
+
     return (
       <View
         style={{
@@ -138,11 +208,18 @@ export default class FABExample extends Component {
           flexDirection: 'column',
           marginLeft: 5,
         }}>
-        <Image
-          style={styles.imageThumbnail}
-          source={{uri: WebHost + item.hinh}}
-        />
-        <Text style={styles.Carname}>{item.tenxe}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.navigation.navigate('SellerCarDetails', {
+              idcar: item.id,
+            });
+          }}>
+          <Image
+            style={styles.imageThumbnail}
+            source={{uri: WebHost + item.hinh}}
+          />
+          <Text style={styles.Carname}>{item.tenxe}</Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -197,8 +274,14 @@ export default class FABExample extends Component {
             translucent={true}
           />
           <View style={styles.container}>
-          <Tabs renderTabBar={()=> <ScrollableTab />} tabBarUnderlineStyle={{borderBottomWidth: 2.5, borderBottomColor:'green', borderTopWidth:0}} style={{borderTopColor:'white', borderTopWidth:0}}>
-            <Tab
+            <Tabs
+              tabBarUnderlineStyle={{
+                borderBottomWidth: 2.5,
+                borderBottomColor: 'green',
+                borderTopWidth: 0,
+              }}
+              style={{borderTopColor: 'white', borderTopWidth: 0}}>
+              <Tab
                 heading="Tất Cả"
                 tabStyle={{backgroundColor: 'white'}}
                 textStyle={{color: 'black'}}
@@ -225,7 +308,7 @@ export default class FABExample extends Component {
                 activeTextStyle={{color: 'green', fontWeight: 'bold'}}>
                 <View style={{margin: 4, marginTop: 20}}>
                   <FlatList
-                    data={this.state.obj}
+                    data={this.state.Caractive}
                     numColumns={2}
                     renderItem={this._renderitem}
                     showsVerticalScrollIndicator={false}
@@ -244,7 +327,7 @@ export default class FABExample extends Component {
                 activeTextStyle={{color: 'green', fontWeight: 'bold'}}>
                 <View style={{margin: 4, marginTop: 20}}>
                   <FlatList
-                    data={this.state.obj}
+                    data={this.state.CarNotactive}
                     numColumns={2}
                     renderItem={this._renderitem}
                     showsVerticalScrollIndicator={false}
@@ -256,14 +339,14 @@ export default class FABExample extends Component {
                 </View>
               </Tab>
               <Tab
-                heading="Đang thuê"
+                heading="Chưa duyệt"
                 tabStyle={{backgroundColor: 'white'}}
                 textStyle={{color: 'black'}}
                 activeTabStyle={{backgroundColor: 'white'}}
                 activeTextStyle={{color: 'green', fontWeight: 'bold'}}>
                 <View style={{margin: 4, marginTop: 20}}>
                   <FlatList
-                    data={this.state.obj}
+                    data={this.state.XeDangThue}
                     numColumns={2}
                     renderItem={this._renderitem}
                     showsVerticalScrollIndicator={false}
@@ -275,7 +358,6 @@ export default class FABExample extends Component {
                 </View>
               </Tab>
             </Tabs>
-
 
             <Fab
               active={this.state.active}
