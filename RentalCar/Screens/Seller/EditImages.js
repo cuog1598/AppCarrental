@@ -36,6 +36,7 @@ import {
 
 import RNFetchBlob from 'rn-fetch-blob';
 import Moment from 'moment';
+import { string } from 'prop-types';
 
 const {width: screenWidth} = Dimensions.get('window');
 const options = {
@@ -47,11 +48,7 @@ const options = {
   },
 };
 
-/**
- * The first arg is the options object for customization (it can also be null or omitted for default options),
- * The second arg is the callback which sends object: response (more info in the API Reference)
- */
-export default class CarDetails extends Component {
+export default class EditImages extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -60,19 +57,38 @@ export default class CarDetails extends Component {
       image: [],
       avatarSource: '',
       data: '',
-      IsSave : false,
+      IsSave : true,
+      Src: '',
     };
   }
-  componentDidMount() {
-    this._LoadHinh();
+  async componentDidMount() {
+    this.backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackPress,
+    );
+    if(this.props.navigation.state.params.ImageId === 0 )
+    {
+      this._LoadCar();
+    }
+    else
+    {
+      this._LoadHinh();
+    }
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
+  handleBackPress = () => {
+    this.props.navigation.goBack(); // works best when the goBack is async
+    return true;
+  };
+
 
   _UploadImage = async () => {
     RNFetchBlob.fetch(
       'PUT',
-      'http://10.0.2.2:45457/api/ImagesCar/' + 1,
+      'http://10.0.2.2:45457/api/ImagesCar/' + this.props.navigation.state.params.ImageId,
       {
         Authorization: 'Bearer access-token',
         otherHeader: 'foo',
@@ -81,21 +97,39 @@ export default class CarDetails extends Component {
       [
         {
           name: 'file',
-          filename: 'image6.png',
+          filename: this.props.navigation.state.params.idcar+'.png ' ,
           type: 'image/png',
           data: this.state.data,
         },
         // part file from storage
       ],
+      [
+        {
+          loai :'1'
+        }
+      ],
+     
     )
       .then(resp => {
-        //toast
+        this.props.navigation.goBack();
       })
       .catch(err => {
         alert('error'  + err)
       });
   };
-
+  _LoadCar = () => {
+    fetch('http://10.0.2.2:45455/api/getcar/' + this.props.navigation.state.params.idcar,)
+      .then(response => response.json())
+      .then(resopnseJson => {
+        this.setState({
+          src:resopnseJson.hinh,
+          isloadding: false,
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
   _Show() {
     ImagePicker.showImagePicker(options, response => {
       console.log('Response = ', response);
@@ -115,7 +149,7 @@ export default class CarDetails extends Component {
         this.setState({
           avatarSource: source,
           data: response.data,
-          IsSave: true,
+          IsSave: false,
         });
       }
     });
@@ -156,11 +190,13 @@ export default class CarDetails extends Component {
 
   //this.props.navigation.state.params.idcar
   _LoadHinh = () => {
-    fetch(HostName + 'api/EditImages/' + 1)
+    
+    fetch(HostName + 'api/EditImages/' + this.props.navigation.state.params.ImageId)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
           image: resopnseJson,
+          src: resopnseJson.src,
           isloadding: false,
         });
 
@@ -197,9 +233,8 @@ export default class CarDetails extends Component {
     }
     return (
       <Container style={styles.container}>
-        <Header style={{backgroundColor: 'white'}} />
         <StatusBar
-          barStyle="light-content"
+          barStyle="dark-content"
           backgroundColor="transparent"
           translucent={true}
         />
@@ -215,7 +250,7 @@ export default class CarDetails extends Component {
               {this.state.avatarSource == '' > 0 && (
                 <Image
                   style={styles.imageThumbnail}
-                  source={{uri: WebHost + this.state.image.src}}
+                  source={{uri: WebHost + this.state.src}}
                 />
               )}
             </CardItem>

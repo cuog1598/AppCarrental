@@ -17,9 +17,10 @@ import Splash from './components/Splash'
 import UserDetails from './Screens/Account/EditAccount';
 import MainSeller from './Screens/Seller/Main'
 import Tab1 from './Screens/Seller/Main'
-
+import Editimage from './Screens/Seller/EditImages'
 import SellerProduct from './Screens/Seller/SellerProduct'
 import CarDetails from './Screens/Seller/CarDetails'
+import SellerEditInfo from './Screens/Seller/Editinfomation'
 //Screen names
 
 import {createAppContainer} from 'react-navigation';
@@ -211,7 +212,12 @@ const Appnavigator2= createStackNavigator(
         SellerCarDetails: {screen:CarDetails, navigationOptions:{
             
         }},
-       
+        SellerEditImages: {screen:Editimage, navigationOptions:{
+            
+        }},
+        SellerEditInfo: {screen:SellerEditInfo, navigationOptions:{
+            
+        }},
         block: {screen: Block},
     },
     {

@@ -15,7 +15,11 @@ import {
   ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
+  KeyboardAvoidingView, 
+  TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native';
+import Modal from "react-native-modal";
 import {HostName} from '../Models.json';
 import {WebHost} from '../Models.json';
 import {WebView} from 'react-native-webview';
@@ -27,15 +31,14 @@ import {
   Card,
   CardItem,
   Body,
-  Icon,
   Left,
   Button,
   Footer,
   FooterTab,
   Right,
+  Item,
+  Input,
 } from 'native-base';
-
-import Carousel from 'react-native-snap-carousel';
 
 import {FlatList} from 'react-native-gesture-handler';
 
@@ -45,6 +48,8 @@ import Event from '../Envent';
 
 const {width: screenWidth} = Dimensions.get('window');
 
+import Icon from 'react-native-vector-icons/Ionicons';
+
 export default class CarDetails extends Component {
   constructor(props) {
     super(props);
@@ -52,31 +57,18 @@ export default class CarDetails extends Component {
       carouselItems: [],
       isloadding: true,
       obj: [],
+      car : [],
       phone: '',
       email: '',
       ngaynhap: '',
       t: '',
-      image:[],
+      image: [],
+      imageleght: '',
+      isModalVisible: false
     };
   }
-  componentDidMount() {
-    const {navigation} = this.props;
-    this.backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      this.handleBackPress,
-    );
-
-    this._fetchData();
-    this._fetchNguoiDang();
-    this._Bindding();
-    this._LoadHinh();
-  }
-
-  componentWillUnmount() {
-  }
-
   static navigationOptions = ({navigation, screenProps}) => ({
-    title: 'Xe của tôi',
+    title: 'Car Details',
     headerTitleStyle: {
       paddingTop: 20,
       fontSize: 22,
@@ -107,12 +99,37 @@ export default class CarDetails extends Component {
       />
     ),
   });
+  async componentDidMount() {
+    this.backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackPress,
+    );
+    this.willFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+      () => {
+        this.setState({
+          isloadding:true,
+        })
+        this._fetchData();
+        this._fetchNguoiDang();
+        this._Bindding();
+        this._LoadHinh();
+      }
+    );
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+    this.willFocusSubscription.remove();
+  }
+  handleBackPress = () => {
+    this.props.navigation.goBack(); // works best when the goBack is async
+    return true;
+  };
+
   //this.props.navigation.state.params.manguoidang
   _fetchNguoiDang = () => {
-    fetch(
-      'http://10.0.2.2:45455/api/Users/' +
-        1,
-    )
+    fetch('http://10.0.2.2:45455/api/Users/' + this.props.navigation.state.params.manguoidang)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
@@ -129,15 +146,13 @@ export default class CarDetails extends Component {
         console.error(error);
       });
   };
-//this.props.navigation.state.params.idcar
+  
   _Bindding = () => {
-    fetch(
-      'http://10.0.2.2:45455/api/getcar/' +1
-        ,
-    )
+    fetch('http://10.0.2.2:45455/api/getcar/' + this.props.navigation.state.params.idcar)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
+          car : resopnseJson,
           ngayNhap: resopnseJson.ngayNhap,
         });
       })
@@ -147,10 +162,7 @@ export default class CarDetails extends Component {
   };
 
   _fetchData = () => {
-    fetch(
-      'http://10.0.2.2:45455/api/DetailsCar/' +1
-        ,
-    )
+    fetch('http://10.0.2.2:45455/api/DetailsCar/' + this.props.navigation.state.params.idcar)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
@@ -167,20 +179,16 @@ export default class CarDetails extends Component {
   };
 
   _LoadHinh = () => {
-    fetch(
-       HostName+'api/Images/' +
-        1,
-    )
+    fetch(HostName + 'api/Images/' + this.props.navigation.state.params.idcar)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
           image: resopnseJson,
           isloadding: false,
-
         });
 
         if (this.state.image.length == 0) {
-          alert('cant load data');
+          alert('cant load image');
         }
       })
       .catch(error => {
@@ -188,37 +196,41 @@ export default class CarDetails extends Component {
       });
   };
 
-  _goback() {
-    const {navigation} = this.props;
-    navigation.goBack();
-  }
-  _Save = () => {
-    alert('You tapped the button!');
+  _AddImage = () => {
+    const imageleght= this.state;
+    if (this.state.image.length  >= 3) {
+      alert('Số lượng hình tối đa là 4'+this.state.image.length);
+    } else {
+    }
+  };
+  toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
   };
 
   //header images
-  _renderItem({item}) {
+  _renderitem = ({item}) => {
     return (
-<View
-      style={{
-        flex: 1,
-        flexDirection: 'column',
-      }}>
-      <TouchableOpacity
+      <TouchableHighlight
         onPress={() => {
-          this.props.navigation.navigate('SellerCarDetails', {
-            idcar: item.id,
+          this.props.navigation.navigate('SellerEditImages', {
+            ImageId: item.id, idcar :this.props.navigation.state.params.idcar
           });
         }}>
-        <Image
-          style={styles.imageThumbnail}
-          source={{uri: WebHost + item.src}}
-        />
-      </TouchableOpacity>
-    </View>
-      
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            marginLeft: 7,
+          }}>
+          <Image
+            style={styles.imageThumbnail}
+            source={{uri: WebHost + item.src}}
+          />
+        </View>
+      </TouchableHighlight>
     );
-  }
+  };
+
   //main list
   _render = ({item}) => {
     let newDate = Moment().format('' + this.state.ngaynhap + 'DD-MM-YYYY');
@@ -230,23 +242,19 @@ export default class CarDetails extends Component {
             transparent
             style={{borderBottomLeftRadius: 12, borderBottomRightRadius: 12}}>
             <Body>
-              <Button transparent>
-                <Icon active name="thumbs-up" style={{color: '#228b22'}} />
-                <TouchableOpacity>
+                <TouchableOpacity >
                   <Icon
                     style={{
-                      height: 30,
-                      width: 30,
                       paddingRight: 8,
-                      color: 'black',
+                      color: 'green',
                     }}
-                    name="heart"
+                    name="ios-eye"
                     size={50}
-                    onPress={this._Save}
+                    onPress={()=>{
+                      this.props.navigation.navigate("SellerEditInfo", {idcar : this.props.navigation.state.params.idcar})
+                    }}
                   />
                 </TouchableOpacity>
-                
-              </Button>
               <Button transparent>
                 <Text style={styles.TenXe}>{item.tenxe}</Text>
                 <Text style={styles.NameHeader}>{item.gia} VNĐ</Text>
@@ -313,16 +321,6 @@ export default class CarDetails extends Component {
             </Body>
           </CardItem>
         </Card>
-        <Card transparent style={{borderRadius: 12}}>
-          <CardItem
-            transparent
-            style={{borderTopLeftRadius: 12, borderTopRightRadius: 12}}>
-            <Text style={styles.Text}>Cùng tiêu chi</Text>
-          </CardItem>
-          <CardItem>
-            <Event />
-          </CardItem>
-        </Card>
       </View>
     );
   };
@@ -331,44 +329,42 @@ export default class CarDetails extends Component {
     const {navigation} = this.props;
 
     if (this.state.isloadding) {
-      <View style={{justifyContent: 'center', flex: 1}}>
+      return(
+        <View style={{justifyContent: 'center', flex: 1}}>
         <ActivityIndicator size="large" color="#00ff00" paddingTop={80} />
-      </View>;
+      </View>
+      );
     }
     return (
       <Container style={styles.container}>
-        <Header style={{backgroundColor:'white'}}/>
         <StatusBar
-          barStyle="light-content"
+          barStyle="dark-content"
           backgroundColor="transparent"
           translucent={true}
         />
         <ScrollView showsVerticalScrollIndicator={false}>
-            <Card transparent>
-              
-              <CardItem>
+          <Card transparent>
+            <CardItem>
               <FlatList
-              data={this.state.image}
-              renderItem={this._renderItem}
-              keyExtractor={() =>
-                Math.random()
-                  .toString(36)
-                  .substr(2, 9)
-              }
-              numColumns={2}
-            />
-              </CardItem>
-              <CardItem>
+                data={this.state.image}
+                renderItem={this._renderitem}
+                keyExtractor={() =>
+                  Math.random()
+                    .toString(36)
+                    .substr(2, 9)
+                }
+                numColumns={2}
+              />
+            </CardItem>
+            <CardItem>
               <Left>
-              <Text style={styles.TextHeader}>Thêm hình</Text>
+                <Icon name={'ios-add-circle-outline'} size = {30} style = {{color:'green', marginLeft:10}} onPress={this._AddImage}>  </Icon>
               </Left>
               <Right>
-              <Text style={styles.TextHeader}>Bấm vào hình để chỉnh sua</Text>
-                
+                <Text style={styles.TextHeader}>Bấm vào hình để chỉnh sửa</Text>
               </Right>
-              </CardItem>
-            
-            </Card>
+            </CardItem>
+          </Card>
           <FlatList
             data={this.state.carouselItems}
             renderItem={this._render}
@@ -378,7 +374,8 @@ export default class CarDetails extends Component {
                 .substr(2, 9)
             }></FlatList>
         </ScrollView>
-
+       
+        
         <Footer style={styles.footer}>
           <FooterTab style={styles.footer}>
             <ScrollView horizontal={true}>
@@ -388,8 +385,20 @@ export default class CarDetails extends Component {
                 icon
                 style={styles.Button}
                 onPress={this._onPressButton}>
-                <Icon name="chatboxes" />
-                <Text>Chat</Text>
+                {!this.state.car.moban && (
+                <Icon name="ios-lock" size= {25} style={{color:'red'}} />
+
+              )}
+              {this.state.car.moban && (
+                <Icon name="ios-unlock" size= {25} style={{color:'yellow'}} />
+              )}
+                {this.state.car.moban && (
+                <Text>Khoá xe</Text>
+
+              )}
+              {!this.state.car.moban && (
+                <Text>Mở xe</Text>
+              )}
               </Button>
               <Button
                 bordered
@@ -397,14 +406,12 @@ export default class CarDetails extends Component {
                 style={styles.Button}
                 icon
                 onPress={() => {
-                  this.props.navigation.navigate('Oders', {
-                    maxe: this.props.navigation.state.params.idcar,
-                  });
+                  this.props.navigation.navigate("SellerEditInfo", {idcar : this.props.navigation.state.params.idcar});
                 }}>
-                <Icon name="paper" />
+                <Icon name="ios-settings" size={25} />
                 <Text style={{fontSize: 16, fontFamily: 'tahoma'}}>
                   {' '}
-                  Đặt hẹn ngay{' '}
+                  Chỉnh sửa{' '}
                 </Text>
               </Button>
             </ScrollView>
@@ -422,6 +429,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: '#f5f5f5',
+    flexDirection: 'column',
   },
   container2: {
     paddingTop: 40,
@@ -437,7 +445,7 @@ const styles = StyleSheet.create({
   },
   i: {
     resizeMode: 'stretch',
-    width: screenWidth/2-20,
+    width: screenWidth / 2 - 20,
     height: 230,
     flex: 1,
   },
@@ -491,8 +499,21 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 5,
   },
-  TextHeader : {
-    fontSize:18,
-    color:'green'
-  }
+  TextHeader: {
+    fontSize: 16,
+    color: 'green',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    flex: 1,
+  },infoContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: 200,
+    padding: 20,
+    marginLeft: 12,
+    marginRight: 12,
+    // backgroundColor: 'red'
+  },
 });

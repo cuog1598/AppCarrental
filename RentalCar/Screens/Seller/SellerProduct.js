@@ -101,11 +101,35 @@ export default class FABExample extends Component {
   });
 
   componentDidMount() {
-    this._GetCar();
-    this._GetCarActive();
-    this._GetCarNotActive();
-    this._ChuaDuyet();
+    this.backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackPress,
+    );
+
+    this.willFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+      () => {
+        this.setState( {
+          isLoadding:true,
+        })
+        this._GetCar();
+        this._GetCarActive();
+        this._GetCarNotActive();
+        this._ChuaDuyet();
+      }
+    );
+
   }
+  
+  componentWillUnmount() {
+    this.willFocusSubscription.remove();
+    this.backHandler.remove();
+
+  }
+  handleBackPress = () => {
+    this.props.navigation.goBack(); // works best when the goBack is async
+    return true;
+  };
   _GetCar = async () => {
     const value = await AsyncStorage.getItem('@MyApp2_key');
     fetch(
@@ -200,7 +224,6 @@ export default class FABExample extends Component {
 
   _renderitem = ({item}) => {
     const {navigate} = this.props.navigation;
-
     return (
       <View
         style={{

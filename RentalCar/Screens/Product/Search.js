@@ -127,7 +127,6 @@ export default class HeaderMultipleIconExample extends Component {
 }
 
 onValueChange(value) {
-
   this.setState({
     check:false,
     selected: value,
@@ -205,7 +204,7 @@ fetch('http://10.0.2.2:45455/api/Huyens/'+value)
                 <Picker
                   mode="dropdown"
                   iosIcon={<Icon name="ios-arrow-down" />}
-                  style={{ width: width }}
+                  style={{ width: undefined }}
                   selectedValue={this.state.selected}
                   onValueChange={this.onValueChange.bind(this)}
                 >

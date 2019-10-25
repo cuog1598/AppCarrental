@@ -326,7 +326,7 @@ export default class Seemore extends Component {
           "tuNgay": this.state.chosenDate.toString().substr(0,10),
           "denNgay": this.state.chosenDateTo.toString().substr(0,10),
           "tinhTrangThanhToan": null,
-          "status": flattenDiagnosticMessageText,
+          "status": false,
           "songay": this.state.totalDay/(1000 * 60 * 60 * 24),
           "tongTien": this.state.gia * (this.state.totalDay/(1000 * 60 * 60 * 24)) + 2500000,
           "giamgia": null,
@@ -339,13 +339,11 @@ export default class Seemore extends Component {
           .then((responseJson) => {
          if(responseJson.title =="Not Found" ) {
           alert('không thành công')
-
         } else {
-            alert('ok');
            this.props.navigation.navigate("Home");
         }
         }).catch((error) => {
-          console.error(error);
+          alert(error);
         });
     }
   }
