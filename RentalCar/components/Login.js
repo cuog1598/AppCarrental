@@ -112,6 +112,7 @@ export default class Login extends Component {
                  else {
                     try{
                          AsyncStorage.setItem('@MyApp2_key', responseJson.id.toString());
+                         alert(responseJson.id.toString())
                          AsyncStorage.setItem('@MyApp2_key_Username', this.state.userName);
                          this.props.navigation.navigate('Home')
                     }

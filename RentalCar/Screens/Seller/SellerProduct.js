@@ -14,8 +14,6 @@ import {
 } from 'react-native';
 import {
   Container,
-  Header,
-  Button,
   Fab,
   Tab,
   Tabs,
@@ -27,14 +25,16 @@ import {
   Left,
   Thumbnail,
   ScrollableTab,
+  Picker,
+  Form,
+  Label,
 } from 'native-base';
 import Head from '../Components/BigHeader';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {HostName} from '../Models.json';
 import {WebHost} from '../Models.json';
-
-
+import Modal from 'react-native-modal';
 export const CustomNavButton = () => {
   return (
     <View>
@@ -53,10 +53,14 @@ export default class FABExample extends Component {
       Nodata: false,
       isLoadding: true,
       Mail: 1,
-      obj: [],
+      obj1: [],
       Caractive: [],
       CarNotactive: [],
       XeDangThue: [],
+      isModalVisible: false,
+      selected: '0',
+      selected2: '',
+      obj2: [],
     };
   }
 
@@ -109,27 +113,53 @@ export default class FABExample extends Component {
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       () => {
-        this.setState( {
-          isLoadding:true,
-        })
+        this.setState({
+          isLoadding: true,
+          selected: '0',
+          selected2: '',
+      isModalVisible: false,
+        });
         this._GetCar();
         this._GetCarActive();
         this._GetCarNotActive();
         this._ChuaDuyet();
-      }
+      },
     );
-
   }
-  
-  componentWillUnmount() {
+
+   componentWillUnmount() {
     this.willFocusSubscription.remove();
     this.backHandler.remove();
-
   }
   handleBackPress = () => {
     this.props.navigation.goBack(); // works best when the goBack is async
     return true;
   };
+
+  onValueChange(value) {
+    this.setState({
+      check: false,
+      selected: value,
+    });
+
+    fetch(HostName + 'api/HangXes/' + value)
+      .then(response => response.json())
+      .then(resopnseJson => {
+        this.setState({
+          obj2: resopnseJson,
+          isloadding: false,
+        });
+      })
+      .catch(error => {
+        alert(error);
+      });
+  }
+  //gọi đến hàm khi thay đổi selected
+  onValueChange2(value) {
+    this.setState({
+      selected2: value,
+    });
+  }
   _GetCar = async () => {
     const value = await AsyncStorage.getItem('@MyApp2_key');
     fetch(
@@ -221,7 +251,9 @@ export default class FABExample extends Component {
         alert(error);
       });
   };
-
+  toggleModal = () => {
+    this.setState({isModalVisible: !this.state.isModalVisible});
+  };
   _renderitem = ({item}) => {
     const {navigate} = this.props.navigation;
     return (
@@ -275,7 +307,9 @@ export default class FABExample extends Component {
                 borderRadius: 40,
               }}
               position="bottomRight"
-              onPress={() => this.setState({active: !this.state.active})}>
+              onPress={() =>
+                this.setState({isModalVisible: !this.state.isModalVisible})
+              }>
               <Icon name="ios-add" size={40} />
             </Fab>
             <View
@@ -394,14 +428,134 @@ export default class FABExample extends Component {
                 borderRadius: 40,
               }}
               position="bottomRight"
-              onPress={() => this.setState({})}>
+              onPress={this.toggleModal}>
               <Icon name="ios-add" size={60} />
             </Fab>
           </View>
+
+          <Modal
+            isVisible={this.state.isModalVisible}
+            onRequestClose={() => {
+              this.setState({
+                isModalVisible: !this.state.isModalVisible,
+              });
+            }}
+            coverScreen={true}
+            style={{justifyContent: 'center'}}>
+            <View style={{flex: 1}}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  marginTop: (height / 4) * 0.6,
+                  borderWidth: 0.4,
+                  borderColor: 'gray',
+                  borderRadius: 8,
+                  paddingBottom: 10,
+                }}>
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    borderTopRightRadius: 8,
+                    borderTopLeftRadius: 8,
+                    alignItems: 'center',
+                    borderWidth: 0.4,
+                    borderBottomColor: 'gray',
+                    height: 80,
+                  }}>
+                  <Text style={{fontSize: 22, fontWeight: '900'}}>
+                    Create new car
+                  </Text>
+                  <Text style={{fontSize: 17, color: 'gray'}}>
+                    Chọn loại xe
+                  </Text>
+                </View>
+                <View style={{margin: 10}}>
+                  <Form>
+                    <Picker
+                      mode="dropdown"
+                      iosIcon={<Icon name="ios-arrow-down" />}
+                      style={{width: undefined}}
+                      selectedValue={this.state.selected}
+                      onValueChange={this.onValueChange.bind(this)}>
+                      <Picker.Item label="Chọn loại xe" value="0" />
+                      <Picker.Item label="Xe máy" value="1" />
+                      <Picker.Item label="ô Tô" value="2" />
+                    </Picker>
+                  </Form>
+                  <Form style={{paddingTop: 10}}>
+                    <Picker
+                      mode="dropdown"
+                      iosIcon={<Icon name="ios-arrow-down" />}
+                      style={{width: undefined}}
+                      selectedValue={this.state.selected2}
+                      onValueChange={this.onValueChange2.bind(this)}>
+                      <Picker.Item label="Chọn hãng dưới đây" value="0" />
+                      {this.state.obj2.map(item => {
+                        return (
+                          <Picker.Item
+                            label={item.tenHang}
+                            value={item.id}
+                            key={item.id}
+                          />
+                        );
+                      })}
+                    </Picker>
+                  </Form>
+                </View>
+
+                <View
+                  style={{
+                    paddingTop: 10,
+                    borderTopColor: 'gray',
+                    borderTopWidth: 0.4,
+                  }}>
+                  <TouchableOpacity
+                    onPress={
+                    this.Tieptuc
+                    }
+                    >
+                    {this.state.selected2 > 0 && (
+                      <Text
+                        style={{
+                          color: 'red',
+                          fontSize: 22,
+                          textAlign: 'center',
+                          marginTop: 10,
+                          marginBottom: 20,
+                        }}>
+                        Tiếp tục
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={this._cancel}>
+                    <Text style={styles.TextModel}>Huỷ</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
         </Container>
       );
     }
   }
+  Tieptuc = () => {
+    const navigate = this.props.navigation;
+    this.setState ({
+      isModalVisible : !this.state.isModalVisible,
+    })
+    this.props.navigation.navigate('SellerCreateNewCar', {
+      maloai: this.state.selected,
+      mahang: this.state.selected2,
+    });
+    
+  };
+  _cancel = () => {
+    this.setState({
+      isModalVisible: !this.state.isModalVisible,
+      selected: '0',
+      selected2: '',
+    });
+  };
 }
 const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -421,5 +575,12 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     color: 'gray',
     marginLeft: width / 8.3,
+  },
+  TextModel: {
+    fontSize: 20,
+    color: 'blue',
+    textAlign: 'center',
+    paddingTop: 10,
+    marginBottom: 10,
   },
 });

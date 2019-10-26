@@ -146,7 +146,7 @@ export default class CarDetails extends Component {
 
   //lấy danh sách tỉnh
   _fetchTinh = () => {
-    fetch('http://10.0.2.2:45455/api/tinhs')
+    fetch(HostName+'api/tinhs')
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
@@ -158,7 +158,7 @@ export default class CarDetails extends Component {
       });
   };
   _GetallHangXe = () => {
-    fetch('http://10.0.2.2:45455/api/HangXes')
+    fetch(HostName+'api/HangXes')
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
@@ -176,7 +176,7 @@ export default class CarDetails extends Component {
       selected: value,
     });
     //lấy danh sách huyện bởi tỉnh
-    fetch('http://10.0.2.2:45455/api/Huyens/' + value)
+    fetch(HostName+'api/Huyens/' + value)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({

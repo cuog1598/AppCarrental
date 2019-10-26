@@ -103,12 +103,6 @@ export default class EditImages extends Component {
         },
         // part file from storage
       ],
-      [
-        {
-          loai :'1'
-        }
-      ],
-     
     )
       .then(resp => {
         this.props.navigation.goBack();

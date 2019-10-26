@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Text, View,Image, BackHandler
+    Text, View,Image, BackHandler, TouchableOpacity
 } from 'react-native';
 
 export default class MainComponent extends Component {   
@@ -17,6 +17,12 @@ export default class MainComponent extends Component {
         </View>
         <View style={{flex:1,paddingLeft:20, paddingTop:10}}>
             <Text>{this.props.Name}</Text>
+        </View>
+        <View style={{flex:1,paddingLeft:20, paddingTop:10}}>
+          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+          <Text>quay lại</Text>
+
+          </TouchableOpacity>
         </View>
       </View>
       );

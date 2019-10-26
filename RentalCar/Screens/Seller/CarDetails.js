@@ -15,14 +15,14 @@ import {
   ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
-  KeyboardAvoidingView, 
+  KeyboardAvoidingView,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
 } from 'react-native';
-import Modal from "react-native-modal";
+import Modal from 'react-native-modal';
 import {HostName} from '../Models.json';
 import {WebHost} from '../Models.json';
-import {WebView} from 'react-native-webview';
+import RNFetchBlob from 'rn-fetch-blob';
 
 import {
   Container,
@@ -38,7 +38,10 @@ import {
   Right,
   Item,
   Input,
+  Label,
 } from 'native-base';
+
+import ImagePicker from 'react-native-image-picker';
 
 import {FlatList} from 'react-native-gesture-handler';
 
@@ -47,6 +50,14 @@ import Moment from 'moment';
 import Event from '../Envent';
 
 const {width: screenWidth} = Dimensions.get('window');
+const options = {
+  title: 'Select Avatar',
+  customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+  storageOptions: {
+    skipBackup: true,
+    path: 'images',
+  },
+};
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -57,14 +68,20 @@ export default class CarDetails extends Component {
       carouselItems: [],
       isloadding: true,
       obj: [],
-      car : [],
+      car: [],
       phone: '',
       email: '',
       ngaynhap: '',
       t: '',
       image: [],
       imageleght: '',
-      isModalVisible: false
+      isModalVisible: false,
+      avatarSource: '',
+      data: '',
+      imgchosen: '',
+      isModalEditImage: false,
+      idimage: '',
+      sohinh: '',
     };
   }
   static navigationOptions = ({navigation, screenProps}) => ({
@@ -108,13 +125,13 @@ export default class CarDetails extends Component {
       'willFocus',
       () => {
         this.setState({
-          isloadding:true,
-        })
+          isloadding: true,
+        });
         this._fetchData();
         this._fetchNguoiDang();
         this._Bindding();
         this._LoadHinh();
-      }
+      },
     );
   }
 
@@ -127,9 +144,35 @@ export default class CarDetails extends Component {
     return true;
   };
 
+  _Show() {
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        alert('User cancelled image picker');
+      } else if (response.error) {
+        alert('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        alert('User tapped custom button: ', response.customButton);
+      } else {
+        const source = {uri: response.uri};
+
+        // You can also display the image using data:
+        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        this.setState({
+          avatarSource: source,
+          data: response.data,
+        });
+      }
+    });
+  }
   //this.props.navigation.state.params.manguoidang
+
   _fetchNguoiDang = () => {
-    fetch('http://10.0.2.2:45455/api/Users/' + this.props.navigation.state.params.manguoidang)
+    fetch(
+      HostName + 'api/Users/' + this.props.navigation.state.params.manguoidang,
+    )
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
@@ -146,13 +189,13 @@ export default class CarDetails extends Component {
         console.error(error);
       });
   };
-  
+
   _Bindding = () => {
-    fetch('http://10.0.2.2:45455/api/getcar/' + this.props.navigation.state.params.idcar)
+    fetch(HostName + 'api/getcar/' + this.props.navigation.state.params.idcar)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
-          car : resopnseJson,
+          car: resopnseJson,
           ngayNhap: resopnseJson.ngayNhap,
         });
       })
@@ -162,7 +205,9 @@ export default class CarDetails extends Component {
   };
 
   _fetchData = () => {
-    fetch('http://10.0.2.2:45455/api/DetailsCar/' + this.props.navigation.state.params.idcar)
+    fetch(
+      HostName + 'api/DetailsCar/' + this.props.navigation.state.params.idcar,
+    )
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
@@ -179,6 +224,7 @@ export default class CarDetails extends Component {
   };
 
   _LoadHinh = () => {
+    const i = 0;
     fetch(HostName + 'api/Images/' + this.props.navigation.state.params.idcar)
       .then(response => response.json())
       .then(resopnseJson => {
@@ -189,6 +235,10 @@ export default class CarDetails extends Component {
 
         if (this.state.image.length == 0) {
           alert('cant load image');
+        } else {
+          this.setState({
+            sohinh: this.state.image.length,
+          });
         }
       })
       .catch(error => {
@@ -196,25 +246,29 @@ export default class CarDetails extends Component {
       });
   };
 
-  _AddImage = () => {
-    const imageleght= this.state;
-    if (this.state.image.length  >= 3) {
-      alert('Số lượng hình tối đa là 4'+this.state.image.length);
+  toggleModal = () => {
+    if (this.state.sohinh >= 4) {
+      alert('Số lượng hình tối đa');
     } else {
+      this.setState({isModalVisible: !this.state.isModalVisible});
     }
   };
-  toggleModal = () => {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
-  };
 
+  //when click on image
+  _onpressIma = (value, id) => {
+    this.setState({
+      imgchosen: value,
+      idimage: id,
+      isModalEditImage: !this.state.isModalEditImage,
+    });
+  };
+  //this._onpressIma(WebHost + item.src, item.id)
   //header images
   _renderitem = ({item}) => {
     return (
       <TouchableHighlight
         onPress={() => {
-          this.props.navigation.navigate('SellerEditImages', {
-            ImageId: item.id, idcar :this.props.navigation.state.params.idcar
-          });
+          this._onpressIma(WebHost + item.src, item.id);
         }}>
         <View
           style={{
@@ -242,19 +296,7 @@ export default class CarDetails extends Component {
             transparent
             style={{borderBottomLeftRadius: 12, borderBottomRightRadius: 12}}>
             <Body>
-                <TouchableOpacity >
-                  <Icon
-                    style={{
-                      paddingRight: 8,
-                      color: 'green',
-                    }}
-                    name="ios-eye"
-                    size={50}
-                    onPress={()=>{
-                      this.props.navigation.navigate("SellerEditInfo", {idcar : this.props.navigation.state.params.idcar})
-                    }}
-                  />
-                </TouchableOpacity>
+             
               <Button transparent>
                 <Text style={styles.TenXe}>{item.tenxe}</Text>
                 <Text style={styles.NameHeader}>{item.gia} VNĐ</Text>
@@ -329,10 +371,10 @@ export default class CarDetails extends Component {
     const {navigation} = this.props;
 
     if (this.state.isloadding) {
-      return(
+      return (
         <View style={{justifyContent: 'center', flex: 1}}>
-        <ActivityIndicator size="large" color="#00ff00" paddingTop={80} />
-      </View>
+          <ActivityIndicator size="large" color="#00ff00" paddingTop={80} />
+        </View>
       );
     }
     return (
@@ -358,7 +400,13 @@ export default class CarDetails extends Component {
             </CardItem>
             <CardItem>
               <Left>
-                <Icon name={'ios-add-circle-outline'} size = {30} style = {{color:'green', marginLeft:10}} onPress={this._AddImage}>  </Icon>
+                <Icon
+                  name={'ios-add-circle-outline'}
+                  size={30}
+                  style={{color: 'green', marginLeft: 10}}
+                  onPress={this.toggleModal}>
+                  {' '}
+                </Icon>
               </Left>
               <Right>
                 <Text style={styles.TextHeader}>Bấm vào hình để chỉnh sửa</Text>
@@ -374,8 +422,7 @@ export default class CarDetails extends Component {
                 .substr(2, 9)
             }></FlatList>
         </ScrollView>
-       
-        
+
         <Footer style={styles.footer}>
           <FooterTab style={styles.footer}>
             <ScrollView horizontal={true}>
@@ -384,21 +431,22 @@ export default class CarDetails extends Component {
                 danger
                 icon
                 style={styles.Button}
-                onPress={this._onPressButton}>
-                {!this.state.car.moban && (
-                <Icon name="ios-lock" size= {25} style={{color:'red'}} />
+                onPress={this.CancelCar}>
 
-              )}
-              {this.state.car.moban && (
-                <Icon name="ios-unlock" size= {25} style={{color:'yellow'}} />
-              )}
                 {this.state.car.moban && (
-                <Text>Khoá xe</Text>
+                  <Icon name="ios-lock" size={25} style={{color: 'red'}} />
+                )}
+                {!this.state.car.moban && (
+                  <Icon name="ios-unlock" size={25} style={{color: 'yellow'}} />
+                )}
+                {this.state.car.moban && (
+                    <Text>Khoá xe</Text>
+                )}
+                {!this.state.car.moban && (
 
-              )}
-              {!this.state.car.moban && (
-                <Text>Mở xe</Text>
-              )}
+              <Text>Mở xe</Text>
+                )}
+
               </Button>
               <Button
                 bordered
@@ -406,7 +454,9 @@ export default class CarDetails extends Component {
                 style={styles.Button}
                 icon
                 onPress={() => {
-                  this.props.navigation.navigate("SellerEditInfo", {idcar : this.props.navigation.state.params.idcar});
+                  this.props.navigation.navigate('SellerEditInfo', {
+                    idcar: this.props.navigation.state.params.idcar,
+                  });
                 }}>
                 <Icon name="ios-settings" size={25} />
                 <Text style={{fontSize: 16, fontFamily: 'tahoma'}}>
@@ -417,9 +467,338 @@ export default class CarDetails extends Component {
             </ScrollView>
           </FooterTab>
         </Footer>
+        <Modal
+          isVisible={this.state.isModalEditImage}
+          coverScreen={true}
+          style={{justifyContent: 'center'}}>
+          <View style={{flex: 1}}>
+            <View
+              style={{
+                backgroundColor: 'white',
+                marginTop: (height / 4) * 0.4,
+                borderWidth: 0.4,
+                borderColor: 'gray',
+                borderRadius: 8,
+                paddingBottom: 10,
+              }}>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  borderTopRightRadius: 8,
+                  borderTopLeftRadius: 8,
+                  alignItems: 'center',
+                  borderWidth: 0.4,
+                  borderBottomColor: 'gray',
+                  height: 70,
+                }}>
+                <Text style={{fontSize: 22, fontWeight: '900'}}>
+                  Edit image
+                </Text>
+              </View>
+              <View style={{margin: 10}}>
+                {this.state.avatarSource == '' && (
+                  <Image
+                    source={{uri: this.state.imgchosen}}
+                    style={{height: 300, width: null}}
+                  />
+                )}
+                {this.state.avatarSource != '' && (
+                  <Image
+                    source={this.state.avatarSource}
+                    style={{height: 300, width: null}}
+                  />
+                )}
+              </View>
+
+              <View
+                style={{
+                  paddingTop: 10,
+                  borderTopColor: 'gray',
+                  borderTopWidth: 0.4,
+                }}>
+                {this.state.avatarSource != '' && (
+                  <TouchableOpacity onPress={this._UploadImage2}>
+                    <Text
+                      style={{
+                        marginTop: 10,
+                        fontSize: 22,
+                        textAlign: 'center',
+                        color: '#ffa500',
+                      }}>
+                      Lưu
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {this.state.avatarSource == '' && (
+                  <TouchableOpacity onPress={this.Delete}>
+                    <Text
+                      style={{
+                        marginTop: 10,
+                        fontSize: 22,
+                        textAlign: 'center',
+                        color: '#ffa500',
+                      }}>
+                      Xoá
+                    </Text>
+                  </TouchableOpacity>
+                )}
+
+                <TouchableOpacity onPress={this._Show.bind(this)}>
+                  <Text
+                    style={{
+                      color: 'red',
+                      fontSize: 22,
+                      textAlign: 'center',
+                      marginTop: 10,
+                      marginBottom: 10,
+                    }}>
+                    Chọn ảnh
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={this.Cancel}>
+                  <Text style={styles.TextModel}>Huỷ</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          isVisible={this.state.isModalVisible}
+          coverScreen={true}
+          style={{justifyContent: 'center'}}>
+          <View style={{flex: 1}}>
+            <View
+              style={{
+                backgroundColor: 'white',
+                marginTop: (height / 4) * 0.4,
+                borderWidth: 0.4,
+                borderColor: 'gray',
+                borderRadius: 8,
+                paddingBottom: 10,
+              }}>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  borderTopRightRadius: 8,
+                  borderTopLeftRadius: 8,
+                  alignItems: 'center',
+                  borderWidth: 0.4,
+                  borderBottomColor: 'gray',
+                  height: 70,
+                }}>
+                <Text style={{fontSize: 22, fontWeight: '900'}}>
+                  Thêm hình ảnh
+                </Text>
+              </View>
+              <View style={{margin: 10}}>
+                {this.state.avatarSource == '' && (
+                  <Image
+                    source={require('../images/backgroud/addimg.png')}
+                    style={{height: 300, width: null}}
+                  />
+                )}
+                {this.state.avatarSource != '' && (
+                  <Image
+                    source={this.state.avatarSource}
+                    style={{height: 300, width: null}}
+                  />
+                )}
+              </View>
+
+              <View
+                style={{
+                  paddingTop: 10,
+                  borderTopColor: 'gray',
+                  borderTopWidth: 0.4,
+                }}>
+                <TouchableOpacity
+                  onPress={this._UploadImage}
+                  >
+                  {this.state.avatarSource != '' && (
+                    <Text
+                      style={{
+                        marginTop: 10,
+                        fontSize: 22,
+                        textAlign: 'center',
+                        color: '#ffa500',
+                      }}>
+                      Lưu
+                    </Text>
+                  )}
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={this._Show.bind(this)}>
+                  <Text
+                    style={{
+                      color: 'red',
+                      fontSize: 22,
+                      textAlign: 'center',
+                      marginTop: 10,
+                      marginBottom: 10,
+                    }}>
+                    Chọn ảnh
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={this.Cancel}>
+                  <Text style={styles.TextModel}>Huỷ</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </Container>
     );
   }
+
+  CancelCar = () => {
+  
+      fetch(HostName + 'api/GetXe/' + this.props.navigation.state.params.idcar, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(response => response.json())
+        .then(responseJson => {
+          if (responseJson.title == 'Not Found') {
+            alert('Không tìm thấy xe');
+          } else {
+            this.setState({
+              isloadding:true,
+            })
+            this._Bindding();
+            if(this.state.car.length == 0 )
+            {
+              alert("Không load được data")
+              
+            }            
+            else
+            {
+              this.setState({
+                isloadding:false,
+              })
+            }
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+  };
+  Delete = () => {
+    if (this.state.idimage == 0 || this.state.idimage == '0') {
+      alert('Không thể xoá hình này');
+    } else {
+      fetch(WebHost + 'api/ImagesCar/' + this.state.idimage, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: 1,
+        }),
+      })
+        .then(response => response.json())
+        .then(responseJson => {
+          if (responseJson.title == 'Not Found') {
+            alert('không tìm thấy hình ảnh');
+          } else {
+            this.setState({
+              isloadding:true,
+              isModalEditImage: !this.state.isModalEditImage,
+            });
+            this._LoadHinh();
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  };
+
+  _UploadImage = async () => {
+    RNFetchBlob.fetch(
+      'POST',
+      WebHost + 'api/ImagesCar/' + this.props.navigation.state.params.idcar,
+      {
+        Authorization: 'Bearer access-token',
+        otherHeader: 'foo',
+        'Content-Type': 'multipart/form-data',
+      },
+      [
+        {
+          name: 'file',
+          filename: this.props.navigation.state.params.idcar + '.png ',
+          type: 'image/png',
+          data: this.state.data,
+        },
+        // part file from storage
+      ],
+    )
+      .then(resp => {
+        this.setState({
+          isloadding: true,
+          avatarSource: '',
+          isModalVisible: !this.state.isModalVisible,
+        });
+        this._LoadHinh();
+      })
+      .catch(err => {
+        alert('error' + err);
+      });
+  };
+
+  _UploadImage2 = async () => {
+    RNFetchBlob.fetch(
+      'PUT',
+      WebHost + 'api/ImagesCar/' + this.state.idimage,
+      {
+        Authorization: 'Bearer access-token',
+        otherHeader: 'foo',
+        'Content-Type': 'multipart/form-data',
+      },
+      [
+        {
+          name: 'file',
+          filename: this.props.navigation.state.params.idcar + '.png ',
+          type: 'image/png',
+          data: this.state.data,
+        },
+        // part file from storage
+      ],
+    )
+      .then(resp => {
+        this.setState({
+          isloadding: true,
+          avatarSource: '',
+          isModalEditImage: !this.state.isModalEditImage,
+        });
+        this._LoadHinh();
+      })
+      .catch(err => {
+        alert('error' + err);
+      });
+  };
+
+  Cancel = () => {
+    if (this.state.isModalEditImage) {
+      this.setState({
+        isModalEditImage: !this.state.isModalEditImage,
+        avatarSource: '',
+        data: '',
+      });
+    } else {
+      this.setState({
+        isModalVisible: !this.state.isModalVisible,
+        avatarSource: '',
+        data: '',
+      });
+    }
+  };
 }
 const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -506,7 +885,8 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: 'center',
     flex: 1,
-  },infoContainer: {
+  },
+  infoContainer: {
     position: 'absolute',
     left: 0,
     right: 0,
@@ -515,5 +895,17 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     marginRight: 12,
     // backgroundColor: 'red'
+  },
+  ButtonModel: {
+    right: 0,
+    borderRadius: 6,
+    width: width * 0.33,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  TextModel: {
+    fontSize: 20,
+    color: 'blue',
+    textAlign: 'center',
   },
 });

@@ -9,18 +9,19 @@ import Search from './Screens/Product/Search';
 import ListProduct from './Screens/Product/ListProduct';
 import Details from './Screens/Product/Details';
 import SeeMore from './Screens/Product/Seemore';
-import Oders from './Screens/Product/Oders'
-import Cart from './Screens/Product/Cart'
-import History from './Screens/Product/History'
-import OderDetails from'./Screens/Product/OderDetails'
-import Splash from './components/Splash'
+import Oders from './Screens/Product/Oders';
+import Cart from './Screens/Product/Cart';
+import History from './Screens/Product/History';
+import OderDetails from'./Screens/Product/OderDetails';
+import Splash from './components/Splash';
 import UserDetails from './Screens/Account/EditAccount';
-import MainSeller from './Screens/Seller/Main'
-import Tab1 from './Screens/Seller/Main'
-import Editimage from './Screens/Seller/EditImages'
-import SellerProduct from './Screens/Seller/SellerProduct'
-import CarDetails from './Screens/Seller/CarDetails'
-import SellerEditInfo from './Screens/Seller/Editinfomation'
+import MainSeller from './Screens/Seller/Main';
+import Tab1 from './Screens/Seller/Main';
+import Editimage from './Screens/Seller/EditImages';
+import SellerProduct from './Screens/Seller/SellerProduct';
+import CarDetails from './Screens/Seller/CarDetails';
+import SellerEditInfo from './Screens/Seller/Editinfomation';
+import SellerCreateNewCar from './Screens/Seller/CreateNewCar'
 //Screen names
 
 import {createAppContainer} from 'react-navigation';
@@ -216,6 +217,10 @@ const Appnavigator2= createStackNavigator(
             
         }},
         SellerEditInfo: {screen:SellerEditInfo, navigationOptions:{
+            
+        }},
+        SellerCreateNewCar: {screen:SellerCreateNewCar, navigationOptions:{
+            header: null,
             
         }},
         block: {screen: Block},
