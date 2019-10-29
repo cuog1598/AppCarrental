@@ -27,10 +27,10 @@ import {
   Thumbnail,
 } from 'native-base';
 import Head from '../Components/BigHeader';
-
+import {HostName} from '../Models.json';
+import {WebHost} from '../Models.json';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Tab1 from './Tab1';
-import Tab2 from './Tab2';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export const CustomNavButton = () => {
   return (
@@ -48,8 +48,9 @@ export default class FABExample extends Component {
     this.state = {
       active: false,
       Nodata: false,
-      isLoadding: false,
-      Mail: 1,
+      isLoadding: true,
+      Mail: 0,
+      Cart : []
     };
   }
 
@@ -89,15 +90,47 @@ export default class FABExample extends Component {
       'hardwareBackPress',
       this.handleBackPress,
     );
+    this.willFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+      () => {
+          this.setState({
+              isLoadding :true,
+          })
+      this._GetAllcart();
+      },
+    );
  
   }
   componentWillUnmount() {
     this.backHandler.remove();
+    this.willFocusSubscription.remove();      
   }
   handleBackPress = () => {
     this.props.navigation.goBack(); // works best when the goBack is async
     return true;
   };
+
+  _GetAllcart = async () => {
+    const value =  await AsyncStorage.getItem('@MyApp2_key');
+    fetch(HostName+'api/getNotifical/'+value)
+      .then((response) => response.json())
+      .then((resopnseJson) => {
+          this.setState ({
+            obj: resopnseJson,
+            isLoadding:false
+          })
+      if(this.state.Cart.length=== 0)
+      {
+        this.setState ({
+          Mail : this.state.obj.length
+        })
+      }
+      else{}
+      })
+      .catch((error) => {
+          alert(error);
+      });
+  }
   render() {
     if (this.state.isLoadding) {
       return (
@@ -182,7 +215,9 @@ export default class FABExample extends Component {
                     size={width * 0.2}
                     name={'md-notifications-outline'}
                     style={{color: '#daa520'}}
-                    
+                    onPress= {() => {
+                      this.props.navigation.navigate("SellerRequest")
+                    }}
                   />
                   {this.state.Mail > 0 && (
                     <View style={styles.Badge}>

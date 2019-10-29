@@ -15,7 +15,7 @@ import ListProduct from './Screens/Product/ListProduct'
 import Details from './Screens/Product/Details';
 import Seemore from './Screens/Product/Seemore'
 import Oders from './Screens/Product/Oders'
-import Cart from './Screens/Seller/CreateNewCar'
+import Cart from './Screens/Selleradministration/DetailsRequest'
 
 YellowBox.ignoreWarnings([
   'Warning: componentWillMount is deprecated',

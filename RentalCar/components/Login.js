@@ -3,10 +3,12 @@ import {
     StyleSheet, Text, View, Image,
     TouchableWithoutFeedback, StatusBar,
     TextInput, SafeAreaView, Keyboard, TouchableOpacity,
-    KeyboardAvoidingView, BackHandler
+    KeyboardAvoidingView, BackHandler,ActivityIndicator
 
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage';
+import {HostName} from '../Screens/Models.json';
+import {WebHost} from '../Screens/Models.json';
 export default class Login extends Component {
 
 
@@ -17,11 +19,23 @@ export default class Login extends Component {
             passWord: "",
             id:'',
             obj: [],
+            isloadding:false
         }
      }
   
 
     render() {
+        if(this.state.isloadding)
+        {
+            return (
+                <View style={{justifyContent: 'center', flex: 1, margin: 5}}>
+                  <ActivityIndicator size="large" color="#00ff00" paddingTop={80} />
+                </View>
+              );
+        }
+        else
+        {
+
         return (
             <SafeAreaView style={styles.container}>
                 <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true}/>
@@ -65,6 +79,8 @@ export default class Login extends Component {
             </SafeAreaView>
         )
     }
+}
+
     setValue = async (id) => {
         try {
           await AsyncStorage.setItem('@MyApp2_key', this.state.userName)
@@ -87,13 +103,21 @@ export default class Login extends Component {
       getMyValue = async () => {
         try {
           const value = await AsyncStorage.getItem('@MyApp2_key');
-          alert(value )
+          alert(value +"Tài khoản hoặc mật khẩu không đúng")
         } catch(e) {
           alert("Không lưu data");
         }
       }
-    Login= () =>{
-        fetch('http://10.0.2.2:45455/api/users', {
+    Login = () =>{
+        if(this.state.userName == "" || this.state.passWord == "" ) {
+            alert("Chưa nhập tài khoản hoặc mật khẩu")
+        }
+        else
+        {
+            this.setState({
+                isloadding:true
+            })
+            fetch(HostName + 'api/users', {
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
@@ -108,11 +132,16 @@ export default class Login extends Component {
                  if(responseJson.title =="Not Found" ) {
                   this.setValuenull();
                   this.getMyValue();  
+                  this.setState({
+                    isloadding:false
+                })
                 }
                  else {
+                     this.setState({
+                         isloadding: true
+                     })
                     try{
                          AsyncStorage.setItem('@MyApp2_key', responseJson.id.toString());
-                         alert(responseJson.id.toString())
                          AsyncStorage.setItem('@MyApp2_key_Username', this.state.userName);
                          this.props.navigation.navigate('Home')
                     }
@@ -123,9 +152,10 @@ export default class Login extends Component {
                     
                 }
                 }).catch((error) => {
-                  console.error(error);
+                  alert(error);
                 });
             }
+        }
 }
 
 

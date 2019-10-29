@@ -186,7 +186,7 @@ export default class CarDetails extends Component {
         }
       })
       .catch(error => {
-        console.error(error);
+        alert(error);
       });
   };
 
@@ -200,7 +200,7 @@ export default class CarDetails extends Component {
         });
       })
       .catch(error => {
-        console.error(error);
+        alert(error);
       });
   };
 
@@ -219,7 +219,7 @@ export default class CarDetails extends Component {
         }
       })
       .catch(error => {
-        console.error(error);
+        alert(error);
       });
   };
 
@@ -242,7 +242,7 @@ export default class CarDetails extends Component {
         }
       })
       .catch(error => {
-        console.error(error);
+        alert(error);
       });
   };
 
@@ -685,7 +685,7 @@ export default class CarDetails extends Component {
           }
         })
         .catch(error => {
-          console.error(error);
+          alert(error);
         });
   };
   Delete = () => {
@@ -715,7 +715,7 @@ export default class CarDetails extends Component {
           }
         })
         .catch(error => {
-          console.error(error);
+          alert(error);
         });
     }
   };

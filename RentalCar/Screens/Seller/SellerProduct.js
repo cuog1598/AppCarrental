@@ -307,9 +307,7 @@ export default class FABExample extends Component {
                 borderRadius: 40,
               }}
               position="bottomRight"
-              onPress={() =>
-                this.setState({isModalVisible: !this.state.isModalVisible})
-              }>
+              onPress={this.toggleModal }>
               <Icon name="ios-add" size={40} />
             </Fab>
             <View
@@ -320,6 +318,107 @@ export default class FABExample extends Component {
               </Text>
             </View>
           </View>
+          <Modal
+            isVisible={this.state.isModalVisible}
+            onRequestClose={() => {
+              this.setState({
+                isModalVisible: !this.state.isModalVisible,
+              });
+            }}
+            coverScreen={true}
+            style={{justifyContent: 'center'}}>
+            <View style={{flex: 1}}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  marginTop: (height / 4) * 0.6,
+                  borderWidth: 0.4,
+                  borderColor: 'gray',
+                  borderRadius: 8,
+                  paddingBottom: 10,
+                }}>
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    borderTopRightRadius: 8,
+                    borderTopLeftRadius: 8,
+                    alignItems: 'center',
+                    borderWidth: 0.4,
+                    borderBottomColor: 'gray',
+                    height: 80,
+                  }}>
+                  <Text style={{fontSize: 22, fontWeight: '900'}}>
+                    Create new car
+                  </Text>
+                  <Text style={{fontSize: 17, color: 'gray'}}>
+                    Chọn loại xe
+                  </Text>
+                </View>
+                <View style={{margin: 10}}>
+                  <Form>
+                    <Picker
+                      mode="dropdown"
+                      iosIcon={<Icon name="ios-arrow-down" />}
+                      style={{width: undefined}}
+                      selectedValue={this.state.selected}
+                      onValueChange={this.onValueChange.bind(this)}>
+                      <Picker.Item label="Chọn loại xe" value="0" />
+                      <Picker.Item label="Xe máy" value="1" />
+                      <Picker.Item label="ô Tô" value="2" />
+                    </Picker>
+                  </Form>
+                  <Form style={{paddingTop: 10}}>
+                    <Picker
+                      mode="dropdown"
+                      iosIcon={<Icon name="ios-arrow-down" />}
+                      style={{width: undefined}}
+                      selectedValue={this.state.selected2}
+                      onValueChange={this.onValueChange2.bind(this)}>
+                      <Picker.Item label="Chọn hãng dưới đây" value="0" />
+                      {this.state.obj2.map(item => {
+                        return (
+                          <Picker.Item
+                            label={item.tenHang}
+                            value={item.id}
+                            key={item.id}
+                          />
+                        );
+                      })}
+                    </Picker>
+                  </Form>
+                </View>
+
+                <View
+                  style={{
+                    paddingTop: 10,
+                    borderTopColor: 'gray',
+                    borderTopWidth: 0.4,
+                  }}>
+                  <TouchableOpacity
+                    onPress={
+                    this.Tieptuc
+                    }
+                    >
+                    {this.state.selected2 > 0 && (
+                      <Text
+                        style={{
+                          color: 'red',
+                          fontSize: 22,
+                          textAlign: 'center',
+                          marginTop: 10,
+                          marginBottom: 20,
+                        }}>
+                        Tiếp tục
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={this._cancel}>
+                    <Text style={styles.TextModel}>Huỷ</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
         </Container>
       );
     } else {

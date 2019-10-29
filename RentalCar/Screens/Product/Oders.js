@@ -5,7 +5,7 @@ import {StatusBar,BackHandler, NumberFormat, FormattedNumber, ListView, Touchabl
 
 import { Container, Header, Content, Card, CardItem, Body, Icon, Left ,Button,Footer,DatePicker} from "native-base";
 import moment from 'moment';
-
+import AsyncStorage from '@react-native-community/async-storage';
 
 const { width: screenWidth } = Dimensions.get('window')
 
@@ -302,7 +302,8 @@ export default class Seemore extends Component {
     }
 
   }
-  Oders= () =>{
+  Oders= async () =>{
+    const value =  await AsyncStorage.getItem('@MyApp2_key');
      const {chosenDate, chosenDateTo,disabled} = this.state;
      if(disabled === true)
      {
@@ -321,7 +322,7 @@ export default class Seemore extends Component {
         },
         body: JSON.stringify({
           "maXe": this.props.navigation.state.params.maxe,
-          "maUs": 1,
+          "maUs": value,
           "ngayLap": this.state.date,
           "tuNgay": this.state.chosenDate.toString().substr(0,10),
           "denNgay": this.state.chosenDateTo.toString().substr(0,10),
@@ -334,6 +335,7 @@ export default class Seemore extends Component {
           "xacnhan": null,
           "TenXe" : this.state.car.tenxe,
           "DiaCHi" : this.state.diachi,
+          "Readed" :false,
         })
         }).then((response) => response.json())
           .then((responseJson) => {

@@ -18,19 +18,8 @@ export default class ListAvatarExample extends Component {
 componentDidMount()
 {
     this._GetAllcart();
-  this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-
 }
 
-
-componentWillUnmount() {
-this.backHandler.remove()
-}
-
-handleBackPress = () => {
-this.props.navigation.goBack(); // works best when the goBack is async
-return true;
-}
 
   _GetAllcart = async () => {
     const value =  await AsyncStorage.getItem('@MyApp2_key');

@@ -22,6 +22,8 @@ import SellerProduct from './Screens/Seller/SellerProduct';
 import CarDetails from './Screens/Seller/CarDetails';
 import SellerEditInfo from './Screens/Seller/Editinfomation';
 import SellerCreateNewCar from './Screens/Seller/CreateNewCar'
+import SellerRequest from './Screens/Selleradministration/Request'
+import SellerDetailsRequest from './Screens/Selleradministration/DetailsRequest'
 //Screen names
 
 import {createAppContainer} from 'react-navigation';
@@ -222,6 +224,12 @@ const Appnavigator2= createStackNavigator(
         SellerCreateNewCar: {screen:SellerCreateNewCar, navigationOptions:{
             header: null,
             
+        }},
+        SellerRequest: {screen:SellerRequest, navigationOptions:{
+            
+        }},
+        SellerRequestDetails: {screen:SellerDetailsRequest, navigationOptions:{
+            header: null,
         }},
         block: {screen: Block},
     },

@@ -49,9 +49,29 @@ export default class CreateNewCar extends Component {
   }
 
   componentDidMount() {
-    this._fetchTinh();
   }
 
+  async componentDidMount() {
+    this._fetchTinh();
+
+    this.willFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+      () => {
+        if(this.state.selected2 != "" )
+        {
+          this.props.navigation.goBack();
+        }
+      },
+    );
+  }
+
+  componentWillUnmount() {
+    this.willFocusSubscription.remove();
+  }
+  handleBackPress = () => {
+    this.props.navigation.goBack(); // works best when the goBack is async
+    return true;
+  };
 
   _fetchTinh = () => {
     fetch(HostName+'api/tinhs')
@@ -383,7 +403,7 @@ export default class CreateNewCar extends Component {
                   borderTopWidth: 0.4,
                 }}>
 
-                {this.state.gia != "", this.state.bienso !="", this.state.sokm !="", this.state.tenxe !="", this.state.tiencoc !="" >0 && (
+                {this.state.gia != "", this.state.bienso !="", this.state.sokm !="", this.state.tenxe !="", this.state.tiencoc !=""  && (
                     <TouchableOpacity onPress={this.Createcar}>
                     <Text
                       style={{
@@ -474,7 +494,12 @@ export default class CreateNewCar extends Component {
              else {
                 try{
                      alert("OK");
-                     this.props.navigation.goBack()
+                     
+                     this.props.navigation.navigate("SellerCarDetails",{idcar : responseJson.id})
+                     this.setState({
+                       IsTogleModelInfo : false,
+                       isloadding :true,
+                     })
                 }
                 catch(error)
                 {
