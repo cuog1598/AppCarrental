@@ -16,14 +16,15 @@ import OderDetails from'./Screens/Product/OderDetails';
 import Splash from './components/Splash';
 import UserDetails from './Screens/Account/EditAccount';
 import MainSeller from './Screens/Seller/Main';
-import Tab1 from './Screens/Seller/Main';
 import Editimage from './Screens/Seller/EditImages';
 import SellerProduct from './Screens/Seller/SellerProduct';
 import CarDetails from './Screens/Seller/CarDetails';
 import SellerEditInfo from './Screens/Seller/Editinfomation';
-import SellerCreateNewCar from './Screens/Seller/CreateNewCar'
-import SellerRequest from './Screens/Selleradministration/Request'
-import SellerDetailsRequest from './Screens/Selleradministration/DetailsRequest'
+import SellerCreateNewCar from './Screens/Seller/CreateNewCar';
+import SellerRequest from './Screens/Selleradministration/Request';
+import SellerDetailsRequest from './Screens/Selleradministration/DetailsRequest';
+import ChatScreens from './Screens/ChatApp/ChatScreens';
+import Te from './Screens/ChatApp/Te'
 //Screen names
 
 import {createAppContainer} from 'react-navigation';
@@ -32,7 +33,8 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 
 import Icon from 'react-native-vector-icons/Ionicons';  
 import Block from './components/Block';
-
+import firebase from 'firebase';
+import User from './Screens/User';
 
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -44,11 +46,37 @@ class Main extends Component {
     }
    
     componentDidMount(){
-        setTimeout(() => {
-      this._bootstrapAsync();
-        }, 500);
+        this.willFocusSubscription = this.props.navigation.addListener(
+            'willFocus',
+            () => {
+                setTimeout(() => {
+                    this._bootstrapAsync();
+                      }, 500);
+            }
+          );
+        
+    }
+    componentWillUnmount() {
+      this.willFocusSubscription.remove();
     }
       
+    componentWillMount(){
+        var firebaseConfig = {
+            apiKey: "AIzaSyBMHWpmLrurrTM6YLZj9VjHMDz8A9Xt0Nk",
+            authDomain: "rnchatapprentalcar.firebaseapp.com",
+            databaseURL: "https://rnchatapprentalcar.firebaseio.com",
+            projectId: "rnchatapprentalcar",
+            storageBucket: "rnchatapprentalcar.appspot.com",
+            messagingSenderId: "970919107663",
+            appId: "1:970919107663:web:ba21a9d0f4b969c8891e3a",
+            measurementId: "G-PZXBK68KCM"
+          };
+          // Initialize Firebase
+          if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+         }
+              // Initialize Firebase
+    }
     render() {
         return(
             <Splash/>
@@ -58,19 +86,11 @@ class Main extends Component {
     
       // Fetch the token from storage then navigate to our appropriate place
       _bootstrapAsync = async () => {
-        const value =  await AsyncStorage.getItem('@MyApp2_key');
-    
+        User.phone =  await AsyncStorage.getItem('@MyApp2_key');
         // This will switch to the App screen or Auth screen and this loading
         // screen will be unmounted and thrown away.
-        if(value == null || value == '')
-        {
-            this.props.navigation.navigate('Login');
-        }
-        else
-        {
-            this.props.navigation.navigate('Home');
-
-        }
+        this.props.navigation.navigate(User.phone ? 'Home' : 'Login');
+        
       };
       
     }
@@ -230,6 +250,10 @@ const Appnavigator2= createStackNavigator(
         }},
         SellerRequestDetails: {screen:SellerDetailsRequest, navigationOptions:{
             header: null,
+        }},
+        ChatScreens: {screen:ChatScreens, navigationOptions:{
+        }},
+        Te: {screen:Te, navigationOptions:{
         }},
         block: {screen: Block},
     },

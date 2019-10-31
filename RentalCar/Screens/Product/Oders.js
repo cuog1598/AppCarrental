@@ -2,7 +2,6 @@ import React,{Component} from 'react';
 
 import {StatusBar,BackHandler, NumberFormat, FormattedNumber, ListView, TouchableOpacity, StyleSheet,Text,Image, View,SafeAreaView,TouchableHighlight,Dimensions,ScrollView, ImageBackground, ActivityIndicator} from 'react-native';
 
-
 import { Container, Header, Content, Card, CardItem, Body, Icon, Left ,Button,Footer,DatePicker} from "native-base";
 import moment from 'moment';
 import AsyncStorage from '@react-native-community/async-storage';

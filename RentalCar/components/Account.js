@@ -64,7 +64,7 @@ _User = async () => {
     try {
       await AsyncStorage.setItem('@MyApp2_key', "")
       await AsyncStorage.setItem('@MyApp2_key_id', "");
-      this.props.navigation.navigate('Login')
+      this.props.navigation.navigate('AuthLoading')
     } catch(e) {
       alert('erro :'  +e)
     }
@@ -126,7 +126,9 @@ _User = async () => {
                  <Icon style={{paddingTop:2}}  name='ios-arrow-forward'  size={20} />
                 </Right>
               </ListItem>
-              <ListItem style={styles.ListItem} selected>
+              <ListItem style={styles.ListItem} selected onPress= {()=> {
+                this.props.navigation.navigate('Te')
+              }}>
                 <Left>
                   <Text style={styles.TextCardItem}>Cài đặt</Text>
                 </Left>

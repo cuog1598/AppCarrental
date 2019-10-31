@@ -9,6 +9,8 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import {HostName} from '../Screens/Models.json';
 import {WebHost} from '../Screens/Models.json';
+import User from '../Screens/User';
+import firebase from 'firebase';
 export default class Login extends Component {
 
 
@@ -143,7 +145,11 @@ export default class Login extends Component {
                     try{
                          AsyncStorage.setItem('@MyApp2_key', responseJson.id.toString());
                          AsyncStorage.setItem('@MyApp2_key_Username', this.state.userName);
+                         User.name = this.state.name;
+                         User.phone = responseJson.id;
+                         firebase.database().ref('users/'+responseJson.id.toString()).set({name: responseJson.hoTen});
                          this.props.navigation.navigate('Home')
+                         
                     }
                     catch(error)
                     {

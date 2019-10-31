@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     flex:1
       },
     Thumbnail:{
-        height:120,
+        height:100,
         left: 0,
         right: 0,
         width: width,
