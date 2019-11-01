@@ -21,12 +21,15 @@ import {WebHost} from '../Models.json';
 
 export default class HomeScreen extends React.Component {
   _isMounted = false;
+  _isMounted2 = true;
   constructor(props) {
     super(props);
     this.state = {
       person: {
         name: props.navigation.getParam('name'),
         phone: props.navigation.getParam('phone'),
+        ismyms : props.navigation.getParam('ismyms'),
+        id : props.navigation.getParam('idList'),
       },
       message: '',
       messageList: [],
@@ -38,22 +41,39 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
     return {
       title: navigation.getParam('name', null),
+      headerTitleStyle: {
+        paddingTop: 20,
+        fontSize: 22,
+        textAlign: 'center',
+        flexGrow: 0.76,
+        alignSelf: 'center',
+        color: 'white',
+      },
+      headerStyle: {
+        backgroundColor: '#32cd32',
+        height: 90,
+      },
     };
   };
 
   componentDidMount =() => {
-    this._isMounted = true;
-    if (this._isMounted) {
+   if (this._isMounted) {
       this._loadmess();
+      this._a();
+      this._updatestatus();
     }
   }
 
+
   UNSAFE_componentWillMount =() => {
+    this._isMounted = true;
+    
   }
 
   componentWillUnmount = () => {
     this._isMounted = false;
   }
+
   _loadmess = () => {
       try{
     firebase
@@ -93,9 +113,14 @@ export default class HomeScreen extends React.Component {
         no.update({seen:'false'})
       }
     })
+   
    }
   _senmesssage = () => {
     if (this.state.message.length > 0) {
+      var ping1= firebase.database().ref('messages').child(User.phone).child('key');
+      var ping2= firebase.database().ref('messages').child(this.state.person.phone).child('key');;
+      ping1.remove();
+      ping2.remove();
       let msgId = firebase
         .database()
         .ref('messages')
@@ -119,15 +144,18 @@ export default class HomeScreen extends React.Component {
       var tao= firebase.database().ref('messages').child(User.phone).child(this.state.person.phone)
       no.update({seen:'true'})
       tao.update({seen:'false'})
+
+
+      ping1.set({pingmess: this.state.message})
+      ping2.set({pingmess: this.state.message})
+
       this.setState({
         message:'',
         seen : 'true'
       });
       this.CreateNewList();
-
-
       this.setState({message: ''});
-      this.CreateNewList();
+
     }
   };
 
@@ -141,15 +169,32 @@ export default class HomeScreen extends React.Component {
     }
     return result;
   };
+  _getlastfrom = phone => {
+    let last = '';
+    firebase
+      .database()
+      .ref('messages')
+      .child(User.phone)
+      .child(phone)
+      .orderByValue()
+      .limitToLast(1)
+      .on('child_added', value => {
+        last = value.val().time;
+      });
+    return last;
+  };
   _renderitem = ({item}) => {
+
+  
+
     if ((item.message != '', item.key != 'status')) {
       return (
         <View
           style={{
             flexDirection: 'row',
             width: '65%',
-            alignSelf: item.from === User.phone ? 'flex-end' : 'flex-start',
-            backgroundColor: item.from === User.phone ? '#00897b' : '#7cb342',
+            alignSelf: item.from == User.phone ? 'flex-end' : 'flex-start',
+            backgroundColor: item.from == User.phone ? '#00897b' : '#7cb342',
             borderRadius: 12,
             marginBottom: 10,
           }}>
@@ -233,6 +278,26 @@ export default class HomeScreen extends React.Component {
     }
   }
   
+
+  _updatestatus=  () =>{
+    //
+  fetch(HostName+'api/chatlist/'+this.state.person.id, {
+          method: 'PUT',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            myUser : User.phone,
+          })
+          }).then((response) => response.json())
+            .then((responseJson) => {
+           
+          }).catch((error) => {
+            console.error(error);
+          });
+      }
+
   CreateNewList=  () =>{
     //
   fetch(HostName+'api/chatlist', {
@@ -243,7 +308,11 @@ export default class HomeScreen extends React.Component {
           },
           body: JSON.stringify({
             myUser : User.phone,
-            fromUser :this.state.person.phone
+            fromUser :this.state.person.phone,
+            msFrom : User.phone,
+            lastMs : this.state.message,
+            status: true,
+
           })
           }).then((response) => response.json())
             .then((responseJson) => {

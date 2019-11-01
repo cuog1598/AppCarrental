@@ -51,23 +51,21 @@ export default class Mail extends React.Component {
 
   _loadList = async () => {
     try {
-      this.setState({isloadding:true})
-      User.phone = await AsyncStorage.getItem('@MyApp2_key');
+      if(User.phone !== "")
+      {
       let dbref = firebase
         .database()
         .ref('messages')
         .child(User.phone);
       dbref.on('child_added', val => {
         this._LoadListChat();
-
         if (val) {
           this.setState({isloadding: true});
         }
-
         let person = val.val();
         person.phone = val.key;
-        if (person.phone === User.phone) {
-          User.phone = person.phone;
+        if (val.val() ==false || val.val() == true) {
+          
         } else {
           firebase
             .database()
@@ -80,13 +78,13 @@ export default class Mail extends React.Component {
               this.setState(prevState => {
                 return {
                   isloadding: false,
-                  users: [...prevState.users, person],
                   nodata: false,
                 };
               });
             });
         }
       });
+      }
     } catch (error) {
       this.setState({isloadding: false});
       alert('err' + error);
@@ -160,41 +158,60 @@ export default class Mail extends React.Component {
     return last;
   };
   _getLastime = phone => {
-    let last = '';
-    firebase
-      .database()
-      .ref('messages')
-      .child(User.phone)
-      .child(phone)
-      .orderByValue()
-      .limitToLast(1)
-      .on('child_added', value => {
-        last = value.val().time;
-      });
-    let d = new Date(last);
     let c = new Date();
-    let result = (d.getHours() < 10 ? '0' : '') + d.getHours() + ':';
-    result += (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
-    if (c.getDate() !== d.getDate()) {
-      result = d.getDate() + '-' + (d.getMonth() + 1);
+    let reult = '';
+    const mouth = phone.toString().substr(5,2);
+    const year = phone.toString().substr(0,4);
+    const day = phone.toString().substr(8,2);
+    let cMounth = c.getMonth() +1;
+    let cYear = c.getFullYear()
+
+    if(mouth== cMounth && day== c.getDate() && year == cYear)
+    {
+      reult= phone.toString().substr(11,5)
     }
-    return result;
+   
+    else
+    if(year == cYear && mouth== cMounth && day !=c.getDate())
+    {
+      reult =  day+' thg '+mouth
+    }
+    else
+    if(cMounth==13 && mouth==12 && year== cYear && day== c.getDate())
+    {
+      reult= phone.toString().substr(11,5)
+    }
+    else 
+    if(cMounth==13 && mouth==12 && year== cYear && day!= c.getDate())
+    {
+      reult =  day+' thg '+mouth
+    }
+    else
+    {
+      reult= year.toString().substr(2,2)+ day+' thg '+mouth
+    }
+    return reult;
   };
 
   _renderitem = ({item}) => {
-   if(this.state.src.length > 0)
-   {
-    if (item.myUser.toString() == User.phone) {
-      const lastme = this._getLastmess(item.fromUser);
-      const lasttime = this._getLastime(item.fromUser);
-      const lastfrom = this._getlastfrom(item.fromUser);
-      const seen = this._Seen(item.fromUser);
+      const lastme = item.lastMs;
+      const lasttime = this._getLastime(item.date);
+      const lastfrom = item.msFrom;
+      const seen = item.status;
+      const name = item.name;
+      let ismyms = false;
+      if(item.status == true && item.msFrom != User.phone)
+      { 
+        ismyms= true;
+      }
       return (
         <TouchableOpacity
           onPress={() => {
             this.props.navigation.navigate('ChatScreens', {
-              phone: item.fromUser.toString(),
-              name: this._convertTime(item.fromUser),
+              phone: item.myUser== User.phone ? item.fromUser : item.myUser,
+              name: item.name,
+              ismyms : item.status == true && item.msFrom != User.phone ? true: false,
+              idList : item.id,
             });
           }}>
           <View style={{margin: 5, marginTop: 20, flexDirection: 'row'}}>
@@ -220,7 +237,7 @@ export default class Mail extends React.Component {
                   fontWeight: '600',
                   color: 'black',
                 }}>
-                {this._convertTime(item.fromUser)}
+                {item.name}
               </Text>
               {lastme.length > 10 && lastfrom != User.phone && (
                 <View style={{flexDirection: 'row'}}>
@@ -242,7 +259,7 @@ export default class Mail extends React.Component {
                   </View>
                 </View>
               )}
-              {lastme.length > 10 && lastfrom == User.phone && (
+              {item.lastMs > 10 && item.fromUser != User.phone && item.status== true && (
                 <View style={{flexDirection: 'row'}}>
                   <View style={{flex: 0.65}}>
                     <Text
@@ -285,132 +302,17 @@ export default class Mail extends React.Component {
                 justifyContent: 'center',
                 width: '10%',
               }}>
-              {this._Seen(item.fromUser) && (
+              {item.msFrom != User.phone && item.status== true&& (
                 <Icon
                   name="ios-basketball"
                   size={20}
-                  style={{color: 'blue', paddingRight: 20}}
+                  style={{color: 'blue', paddingRight: 0}}
                 />
               )}
             </View>
           </View>
         </TouchableOpacity>
       );
-    } else {
-      const lastme = this._getLastmess(item.myUser);
-      const lasttime = this._getLastime(item.myUser);
-      const lastfrom = this._getlastfrom(item.myUser);
-      const seen = this._Seen(item.myUser);
-      return (
-        <TouchableOpacity
-          onPress={() => {
-            this.props.navigation.navigate('ChatScreens', {
-              phone: item.myUser.toString(),
-              name: this._convertTime(item.myUser),
-            });
-          }}>
-          <View style={{margin: 5, marginTop: 20, flexDirection: 'row'}}>
-            <View style={{width: '16%'}}>
-              <Image
-                style={{
-                  backgroundColor: 'yellow',
-                  height: width * 0.15,
-                  width: width * 0.15,
-                  borderRadius: width * 0.15,
-                }}
-                source={require('../images/backgroud/user.png')}
-              />
-            </View>
-            <View
-              style={{justifyContent: 'center', marginLeft: 20, width: '74%'}}>
-              <Text
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={{
-                  fontSize: 19,
-                  paddingTop: 0,
-                  fontWeight: '600',
-                  color: 'black',
-                }}>
-                {this._convertTime(item.fromUser)}
-              </Text>
-              {lastme.length > 10 && lastfrom != User.phone && (
-                <View style={{flexDirection: 'row'}}>
-                  <View style={{flex: 0.65}}>
-                    <Text
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                      style={{fontSize: 12, fontWeight: seen ? 'bold' : '400'}}>
-                      {lastme}
-                    </Text>
-                  </View>
-                  <View style={{flex: 0.35}}>
-                    <Text
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                      style={{fontSize: 12, fontWeight: seen ? 'bold' : '400'}}>
-                      {lasttime}
-                    </Text>
-                  </View>
-                </View>
-              )}
-              {lastme.length > 10 && lastfrom == User.phone && (
-                <View style={{flexDirection: 'row'}}>
-                  <View style={{flex: 0.65}}>
-                    <Text
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                      style={{fontSize: 12}}>
-                      Bạn : {lastme}
-                    </Text>
-                  </View>
-                  <View style={{flex: 0.35}}>
-                    <Text
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                      style={{fontSize: 12}}>
-                      {lasttime}
-                    </Text>
-                  </View>
-                </View>
-              )}
-              {lastme.length < 10 && lastfrom == User.phone && (
-                <Text
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  style={{fontSize: 12, fontWeight: seen ? 'bold' : '400'}}>
-                  Bạn : {lastme} {'      '} {lasttime}
-                </Text>
-              )}
-              {lastme.length < 10 && lastfrom != User.phone && (
-                <Text
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  style={{fontSize: 12, fontWeight: seen ? 'bold' : '400'}}>
-                  {lastme} {'      '} {lasttime}
-                </Text>
-              )}
-            </View>
-
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '16%',
-              }}>
-              {seen && (
-                <Icon
-                  name="ios-basketball"
-                  size={20}
-                  style={{color: 'blue', paddingRight: 20}}
-                />
-              )}
-            </View>
-          </View>
-        </TouchableOpacity>
-      );
-    }
-   }
   };
 
   render() {

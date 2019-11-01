@@ -1,6 +1,7 @@
 const User = {
-    phone :null,
+    phone :"",
     name : null,
+    meme : null,
 }
 
 export default User;

@@ -145,6 +145,7 @@ export default class Login extends Component {
                     try{
                          AsyncStorage.setItem('@MyApp2_key', responseJson.id.toString());
                          AsyncStorage.setItem('@MyApp2_key_Username', this.state.userName);
+                         AsyncStorage.setItem('@MyApp2_key_ll', responseJson.id.toString());
                          User.name = this.state.name;
                          User.phone = responseJson.id;
                          firebase.database().ref('users/'+responseJson.id.toString()).set({name: responseJson.hoTen});
