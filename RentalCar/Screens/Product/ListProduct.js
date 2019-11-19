@@ -135,7 +135,7 @@ export default class CardImageExample extends Component {
             flexDirection: 'row',
             }}>
               <View style={{flex: 0.7}}>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:38}}>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:30}}>
                   <TouchableOpacity onPress={() => {
                                 navigation.goBack()
                             }}>
@@ -147,7 +147,7 @@ export default class CardImageExample extends Component {
                 </ScrollView>
               </View>
               <View style={{flex: 0.3}} horizontal={true}>
-              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:38}}>
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:30}}>
                 <TouchableOpacity onPress={()=>{
                   navigate('CartL')
                 }}>
@@ -195,7 +195,7 @@ export default class CardImageExample extends Component {
             flexDirection: 'row',
             }}>
               <View style={{flex: 0.7}}>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:38}}>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:30}}>
                   <TouchableOpacity onPress={() => {
                                 navigation.goBack()
                             }}>
@@ -207,7 +207,7 @@ export default class CardImageExample extends Component {
                 </ScrollView>
               </View>
               <View style={{flex: 0.3}} horizontal={true}>
-              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:38}}>
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:30}}>
                 <TouchableOpacity onPress={()=>{
                   navigate('CartL')
                 }}>
@@ -248,7 +248,7 @@ const {height,width}= Dimensions.get('window')
 const styles = StyleSheet.create({
     container: {
     backgroundColor: 'transparent',
-    height:100,
+    height:89,
 },
     Thumbnail:{
         flex:1,

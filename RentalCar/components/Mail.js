@@ -42,6 +42,7 @@ export default class Mail extends React.Component {
       () => {
     this._isMounted = true;
         this._LoadListChat();
+        this._fetChatnotificalFromSever();
       },
     );
   }
@@ -53,6 +54,37 @@ export default class Mail extends React.Component {
     this.willFocusSubscription.remove();
     this._isMounted = false;
   }
+
+  _fetChatnotificalFromSever = async () => {
+    let userid =  await AsyncStorage.getItem('@MyApp2_key');
+    if(userid !=null)
+    {
+        fetch(
+            HostName + 'api/GetNotiChat/' +userid,
+          )
+          .then(response => response.json())
+          .then(responseJson => {
+              if(responseJson.title == 'Not Found')
+              {
+                  User.chatCount = 0;
+              }
+              else
+              {
+                  this.setState({
+                      Obj: responseJson,
+                  })
+                  User.chatCount = this.state.Obj.length.toString();
+              }
+            })
+            .catch(error => {
+              alert(error);
+            });
+    }
+    else
+    {
+        
+    }
+  };
   _loadList = async () => {
     try {
       if (User.phone !== '') {
@@ -153,7 +185,7 @@ export default class Mail extends React.Component {
             />
           </View>
           <View
-            style={{justifyContent: 'center', marginLeft: 20, width: '80%'}}>
+            style={{justifyContent: 'center', marginLeft: 20, width: '72%'}}>
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"

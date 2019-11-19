@@ -36,27 +36,63 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Block from './components/Block';
 import firebase from 'firebase';
 import User from './Screens/User';
-
+import {HostName} from './Screens/Models.json';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class Main extends Component {
     constructor(props) {
         super(props);
-        this.state = { currentScreen: 'Splash' };
+        this.state = { currentScreen: 'Splash' 
+        , 
+        Obj : [],
+    };
        
     }
    
     componentDidMount(){
+
         this.willFocusSubscription = this.props.navigation.addListener(
             'willFocus',
             () => {
                 setTimeout(() => {
+                    this._fetChatnotificalFromSever();
                     this._bootstrapAsync();
                       }, 500);
             }
           );
-        
     }
+
+    _fetChatnotificalFromSever = async () => {
+        
+        let userid =  await AsyncStorage.getItem('@MyApp2_key');
+        if(userid !=null)
+        {
+            fetch(
+                HostName + 'api/GetNotiChat/' +userid,
+              )
+              .then(response => response.json())
+              .then(responseJson => {
+                  if(responseJson.title == 'Not Found')
+                  {
+                      User.chatCount = 0;
+                  }
+                  else
+                  {
+                      this.setState({
+                          Obj: responseJson,
+                      })
+                      User.chatCount = this.state.Obj.length.toString();
+                  }
+                })
+                .catch(error => {
+                  alert(error);
+                });
+        }
+        else
+        {
+            
+        }
+      };
     componentWillUnmount() {
       this.willFocusSubscription.remove();
     }
@@ -97,10 +133,10 @@ class Main extends Component {
     }
 
 
-const  badgeCount = 3
-const TabNavigator = createMaterialBottomTabNavigator(  
+const  badgeCount = User.chatCount;
+
+ const TabNavigator = createMaterialBottomTabNavigator(  
     {  
-        
         Home: { screen: Home,  
             navigationOptions:{  
                 tabBarLabel:'Home',  
@@ -128,7 +164,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
                 tabBarIcon: ({ tintColor }) => (  
                     <View>  
                         <Icon style={[{color: tintColor}]} size={25} name={'ios-mail'}/>  
-                        {badgeCount > 0 && (
+                        {User.chatCount > 0 && (
                         <View
                             style={{
                             position: 'absolute',
@@ -143,7 +179,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
                             }}
                         >
                             <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>
-                            {badgeCount}
+                            {User.chatCount}
                             </Text>
                         </View>
                         )}

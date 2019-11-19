@@ -300,9 +300,9 @@ export default class HeaderMultipleIconExample extends Component {
               style={{
                 justifyContent: 'center',
                 resizeMode: 'cover',
-                borderRadius: 300 / 2,
-                height: 300,
-                width: width - 100,
+                borderRadius: width -120,
+                height: width -120 ,
+                width: width-120,
                 paddingLeft: 50,
               }}
               source={require('../images/backgroud/a.jpg')}

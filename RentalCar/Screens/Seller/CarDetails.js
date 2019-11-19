@@ -82,6 +82,7 @@ export default class CarDetails extends Component {
       isModalEditImage: false,
       idimage: '',
       sohinh: '',
+      saveLoad : false,
     };
   }
   static navigationOptions = ({navigation, screenProps}) => ({
@@ -475,7 +476,7 @@ export default class CarDetails extends Component {
             <View
               style={{
                 backgroundColor: 'white',
-                marginTop: (height / 4) * 0.4,
+                marginTop: (height / 4) * 0.3,
                 borderWidth: 0.4,
                 borderColor: 'gray',
                 borderRadius: 8,
@@ -502,6 +503,7 @@ export default class CarDetails extends Component {
                     style={{height: 300, width: null}}
                   />
                 )}
+               
                 {this.state.avatarSource != '' && (
                   <Image
                     source={this.state.avatarSource}
@@ -516,19 +518,23 @@ export default class CarDetails extends Component {
                   borderTopColor: 'gray',
                   borderTopWidth: 0.4,
                 }}>
-                {this.state.avatarSource != '' && (
-                  <TouchableOpacity onPress={this._UploadImage2}>
-                    <Text
-                      style={{
-                        marginTop: 10,
-                        fontSize: 22,
-                        textAlign: 'center',
-                        color: '#ffa500',
-                      }}>
-                      Lưu
-                    </Text>
-                  </TouchableOpacity>
-                )}
+                {this.state.avatarSource != '' && this.state.saveLoad== false && (
+                    <TouchableOpacity onPress={this._UploadImage2}>
+                      <Text
+                        style={{
+                          marginTop: 10,
+                          fontSize: 22,
+                          textAlign: 'center',
+                          color: '#ffa500',
+                        }}>
+                        Lưu
+                      </Text>
+                    </TouchableOpacity>
+                ) }
+                {this.state.avatarSource != '' , this.state.saveLoad && (
+                    <ActivityIndicator size = 'large' />
+                ) }
+
                 {this.state.avatarSource == '' && (
                   <TouchableOpacity onPress={this.Delete}>
                     <Text
@@ -572,7 +578,7 @@ export default class CarDetails extends Component {
             <View
               style={{
                 backgroundColor: 'white',
-                marginTop: (height / 4) * 0.4,
+                marginTop: (height / 14) ,
                 borderWidth: 0.4,
                 borderColor: 'gray',
                 borderRadius: 8,
@@ -616,7 +622,7 @@ export default class CarDetails extends Component {
                 <TouchableOpacity
                   onPress={this._UploadImage}
                   >
-                  {this.state.avatarSource != '' && (
+                  {this.state.avatarSource != '', this.state.saveLoad == false && (
                     <Text
                       style={{
                         marginTop: 10,
@@ -626,6 +632,9 @@ export default class CarDetails extends Component {
                       }}>
                       Lưu
                     </Text>
+                  )}
+                  {this.state.avatarSource != '', this.state.saveLoad && (
+                    <ActivityIndicator size = 'large'/>
                   )}
                 </TouchableOpacity>
 
@@ -721,6 +730,7 @@ export default class CarDetails extends Component {
   };
 
   _UploadImage = async () => {
+    this.setState({saveLoad : !this.state.saveLoad})
     RNFetchBlob.fetch(
       'POST',
       WebHost + 'api/ImageManager/' + this.props.navigation.state.params.idcar,
@@ -743,16 +753,19 @@ export default class CarDetails extends Component {
         this.setState({
           isloadding: true,
           avatarSource: '',
+          saveLoad : !this.state.saveLoad,
           isModalVisible: !this.state.isModalVisible,
         });
         this._LoadHinh();
       })
       .catch(err => {
+        this.setState({saveLoad : !this.state.saveLoad})
         alert('error' + err);
       });
   };
 
   _UploadImage2 = async () => {
+    this.setState({saveLoad : true})
     RNFetchBlob.fetch(
       'PUT',
       WebHost + 'api/ImageManager/' + this.state.idimage,
@@ -772,15 +785,16 @@ export default class CarDetails extends Component {
       ],
     )
       .then(response => {
-     
           this.setState({
             isloadding: true,
             avatarSource: '',
+            saveLoad : !this.state.saveLoad,
             isModalEditImage: !this.state.isModalEditImage,
           });
           this._LoadHinh();
       })
       .catch(err =>  {
+        this.setState({saveLoad : !this.state.saveLoad})
         alert('error' + err);
       });
   };

@@ -520,6 +520,7 @@ export default class CarDetails extends Component {
                 <Text style={{fontSize: 22, fontWeight: '900'}}>Tên Xe</Text>
               </View>
               <View style={{margin: 10}}>
+                
                 <Form>
                   <Picker
                     mode="dropdown"
@@ -604,7 +605,7 @@ export default class CarDetails extends Component {
             <View
               style={{
                 backgroundColor: 'white',
-                marginTop: (height / 4) * 0.6,
+                marginTop: (height / 4) * 0.3,
                 borderWidth: 0.4,
                 borderColor: 'gray',
                 borderRadius: 8,

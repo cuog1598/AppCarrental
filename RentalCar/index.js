@@ -15,7 +15,6 @@ import ListProduct from './Screens/Product/ListProduct'
 import Details from './Screens/Product/Details';
 import Seemore from './Screens/Product/Seemore'
 import Oders from './Screens/Product/Oders'
-import Cart from './Screens/Seller/Tab2'
 
 //set timepout
 const _setTimeout = global.setTimeout;
