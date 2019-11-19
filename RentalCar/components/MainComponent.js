@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-community/async-storage';
 import Moment from 'moment';
 import Headered from '../Screens/Components/BigHeader'
+import {HostName} from '../Screens/Models.json'
 export default class ListAvatarExample extends Component {
   constructor(props){
     super(props);
@@ -23,7 +24,7 @@ componentDidMount()
 
   _GetAllcart = async () => {
     const value =  await AsyncStorage.getItem('@MyApp2_key');
-    fetch('http://10.0.2.2:45455/api/GetOderPerson/'+value)
+    fetch(HostName+'api/GetOderPerson/'+value)
       .then((response) => response.json())
       .then((resopnseJson) => {
           this.setState ({

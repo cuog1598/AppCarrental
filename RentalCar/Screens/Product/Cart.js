@@ -30,7 +30,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import {HostName} from '../Models.json';
+import {WebHost} from '../Models.json';
 const Toast = props => {
   if (props.visible) {
     ToastAndroid.showWithGravityAndOffset(
@@ -96,7 +97,7 @@ export default class Cart extends Component {
 
   _GetAllcart = async () => {
     const value = await AsyncStorage.getItem('@MyApp2_key');
-    fetch('http://10.0.2.2:45455/api/CartPerUser/' + value)
+    fetch(HostName+'api/CartPerUser/' + value)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({

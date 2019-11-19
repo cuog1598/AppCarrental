@@ -88,7 +88,7 @@ export default class EditImages extends Component {
   _UploadImage = async () => {
     RNFetchBlob.fetch(
       'PUT',
-      'http://10.0.2.2:45457/api/ImagesCar/' + this.props.navigation.state.params.ImageId,
+      HostName+'api/ImagesCar/' + this.props.navigation.state.params.ImageId,
       {
         Authorization: 'Bearer access-token',
         otherHeader: 'foo',
@@ -112,7 +112,7 @@ export default class EditImages extends Component {
       });
   };
   _LoadCar = () => {
-    fetch('http://10.0.2.2:45455/api/getcar/' + this.props.navigation.state.params.idcar,)
+    fetch(HostName+'api/getcar/' + this.props.navigation.state.params.idcar,)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({

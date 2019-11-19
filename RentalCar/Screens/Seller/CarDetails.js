@@ -723,7 +723,7 @@ export default class CarDetails extends Component {
   _UploadImage = async () => {
     RNFetchBlob.fetch(
       'POST',
-      WebHost + 'api/ImagesCar/' + this.props.navigation.state.params.idcar,
+      WebHost + 'api/ImageManager/' + this.props.navigation.state.params.idcar,
       {
         Authorization: 'Bearer access-token',
         otherHeader: 'foo',
@@ -755,7 +755,7 @@ export default class CarDetails extends Component {
   _UploadImage2 = async () => {
     RNFetchBlob.fetch(
       'PUT',
-      WebHost + 'api/ImagesCar/' + this.state.idimage,
+      WebHost + 'api/ImageManager/' + this.state.idimage,
       {
         Authorization: 'Bearer access-token',
         otherHeader: 'foo',
@@ -771,15 +771,16 @@ export default class CarDetails extends Component {
         // part file from storage
       ],
     )
-      .then(resp => {
-        this.setState({
-          isloadding: true,
-          avatarSource: '',
-          isModalEditImage: !this.state.isModalEditImage,
-        });
-        this._LoadHinh();
+      .then(response => {
+     
+          this.setState({
+            isloadding: true,
+            avatarSource: '',
+            isModalEditImage: !this.state.isModalEditImage,
+          });
+          this._LoadHinh();
       })
-      .catch(err => {
+      .catch(err =>  {
         alert('error' + err);
       });
   };

@@ -7,7 +7,8 @@ import { Container, Header, Content, Card, CardItem, Body, Icon, Left ,Button,Fo
 
 
 const { width: screenWidth } = Dimensions.get('window')
-
+import {HostName} from '../Models.json';
+import {WebHost} from '../Models.json';
 const a= '../images/backgroud/backgroud.jpg'
 
 export default class Seemore extends Component {
@@ -46,7 +47,7 @@ export default class Seemore extends Component {
     }
     _fetchData = () => {
       //this.props.navigation.state.params.key
-      fetch('http://10.0.2.2:45455/api/getcar/'+1)
+      fetch(HostName+'api/getcar/'+1)
         .then((response) => response.json())
         .then((resopnseJson) => {
             this.setState ({

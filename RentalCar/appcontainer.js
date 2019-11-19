@@ -24,6 +24,7 @@ import SellerCreateNewCar from './Screens/Seller/CreateNewCar';
 import SellerRequest from './Screens/Selleradministration/Request';
 import SellerDetailsRequest from './Screens/Selleradministration/DetailsRequest';
 import ChatScreens from './Screens/ChatApp/ChatScreens';
+import ViewUserInfo from './Screens/Account/ViewUserInfo';
 import Te from './Screens/ChatApp/Te'
 //Screen names
 
@@ -252,6 +253,8 @@ const Appnavigator2= createStackNavigator(
             header: null,
         }},
         ChatScreens: {screen:ChatScreens, navigationOptions:{
+        }},
+        ViewUserInfo: {screen:ViewUserInfo, navigationOptions:{
         }},
         Te: {screen:Te, navigationOptions:{
         }},

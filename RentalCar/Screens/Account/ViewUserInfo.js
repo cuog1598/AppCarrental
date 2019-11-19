@@ -16,7 +16,6 @@ import {
   Dimensions,
   ScrollView,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
 import {
   Container,
@@ -29,14 +28,14 @@ import {
   Input,
   Icon,
 } from 'native-base';
+import AsyncStorage from '@react-native-community/async-storage';
 import {HostName} from '../Models.json';
 import {WebHost} from '../Models.json';
-import AsyncStorage from '@react-native-community/async-storage';
-export default class Login extends Component {
+export default class ViewUserInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: 'Nguyễn cường',
+      userName: '',
       Phone: '',
       email: '',
       id: '',
@@ -44,28 +43,15 @@ export default class Login extends Component {
       obj: [],
       IsLoadding: true,
       LazyLoad: false,
-      enable: false,
     };
   }
 
   componentDidMount = () => {
-    this.backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      this.handleBackPress,
-    );
     this._getUser();
-  };
-  handleBackPress = () => {
-    this.props.navigation.goBack(); // works best when the goBack is async
-    return true;
-  };
-
-  componentWillUnmount = () => {
-    this.backHandler.remove();
   };
   _getUser = async () => {
     const value = await AsyncStorage.getItem('@MyApp2_key');
-    fetch(HostName + 'api/Users/' + value)
+    fetch(HostName+'api/Users/' + value)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
@@ -83,7 +69,7 @@ export default class Login extends Component {
         }
       })
       .catch(error => {
-        Alert.alert('Thông báo', 'error' + error)(error);
+        console.error(error);
       });
   };
   render() {
@@ -152,12 +138,12 @@ export default class Login extends Component {
                 </Text>
                 <Item>
                   <Input
-                    disabled={this.state.enable}
                     onChangeText={userName => this.setState({userName})}
                     value={this.state.userName}
                     keyboardType="email-address"
                     returnKeyType="next"
-                    autoCorrect={false}
+                  disabled = {true}
+                  autoCorrect={false}
                     onSubmitEditing={() => this.refs.txtPassword.focus()}
                   />
                 </Item>
@@ -168,13 +154,13 @@ export default class Login extends Component {
                 <Item>
                   <Icon active name="home" />
                   <Input
-                    disabled={this.state.enable}
                     onChangeText={Phone => this.setState({Phone})}
                     value={this.state.Phone}
                     keyboardType="phone-pad"
                     returnKeyType="next"
                     autoCorrect={false}
-                    ref={'txtPassword'}
+                  disabled = {true}
+                  ref={'txtPassword'}
                     onSubmitEditing={() => this.refs.txtPassword2.focus()}
                   />
                 </Item>
@@ -184,7 +170,7 @@ export default class Login extends Component {
 
                 <Item>
                   <Input
-                    disabled={this.state.enable}
+                  disabled = {true}
                     onChangeText={email => this.setState({email})}
                     value={this.state.email}
                     placeholderTextColor="black"
@@ -193,25 +179,6 @@ export default class Login extends Component {
                     ref={'txtPassword2'}
                   />
                 </Item>
-
-                <TouchableOpacity
-                  style={styles.buttonContainer}
-                  onPress={this.Login}>
-                  {this.state.LazyLoad && (
-                    <View
-                      style={{justifyContent: 'center', flex: 1, margin: 5}}>
-                      <ActivityIndicator
-                        hidesWhenStopped={true}
-                        size="large"
-                        color="#00ff00"
-                        paddingTop={80}
-                      />
-                    </View>
-                  )}
-                  {!this.state.LazyLoad && (
-                    <Text style={styles.buttonText}>Lưu</Text>
-                  )}
-                </TouchableOpacity>
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -219,59 +186,6 @@ export default class Login extends Component {
       </View>
     );
   }
-  Login = async () => {
-    const value = await AsyncStorage.getItem('@MyApp2_key');
-    const {email, Phone, userName} = this.state;
-    this.setState({
-      LazyLoad: true,
-      enable: true,
-    });
-    if (email == '') {
-      alert('Không được để trống email');
-    } else if (Phone.length > 11) {
-      alert('số điện thoại không đúng');
-    } else if (userName == '') {
-      alert('Họ tên không được để trống');
-    } else {
-      fetch(HostName + 'api/users', {
-        method: 'PUT',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: value,
-          userName: this.state.obj.userName,
-          passWord: this.state.obj.userName,
-          hoTen: this.state.userName,
-          ngaySinh: this.state.obj.ngaySinh,
-          ngayNhap: this.state.obj.ngayNhap,
-          diaChi: this.state.obj.diaChi,
-          gioitinh: this.state.obj.gioitinh,
-          status: this.state.obj.status,
-          groudId: this.state.obj.groudId,
-          email: this.state.email,
-          phone: this.state.Phone,
-          xacthuc: this.state.obj.xacthuc,
-        }),
-      })
-        .then(response => response.json())
-        .then(responseJson => {
-          if (responseJson.title == 'Not Found') {
-            alert('Không lưu được');
-            this.setState({
-              LazyLoad: false,
-              enable: false,
-            });
-          } else {
-            this.props.navigation.goBack();
-          }
-        })
-        .catch(error => {
-          Alert.alert('Thông báo', 'error' + error)(error);
-        });
-    }
-  };
 }
 
 const {height, width} = Dimensions.get('window');
@@ -323,7 +237,6 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     justifyContent: 'flex-end',
     marginTop: 20,
-    height: 55,
   },
   buttonText: {
     textAlign: 'center',

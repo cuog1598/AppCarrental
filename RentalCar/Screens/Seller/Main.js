@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   Image,
   Dimensions,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
 import {
   Container,
@@ -50,7 +50,7 @@ export default class FABExample extends Component {
       Nodata: false,
       isLoadding: true,
       Mail: 0,
-      Cart : []
+      Cart: [],
     };
   }
 
@@ -93,17 +93,16 @@ export default class FABExample extends Component {
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       () => {
-          this.setState({
-              isLoadding :true,
-          })
-      this._GetAllcart();
+        this.setState({
+          isLoadding: true,
+        });
+        this._GetAllcart();
       },
     );
- 
   }
   componentWillUnmount() {
     this.backHandler.remove();
-    this.willFocusSubscription.remove();      
+    this.willFocusSubscription.remove();
   }
   handleBackPress = () => {
     this.props.navigation.goBack(); // works best when the goBack is async
@@ -111,26 +110,25 @@ export default class FABExample extends Component {
   };
 
   _GetAllcart = async () => {
-    const value =  await AsyncStorage.getItem('@MyApp2_key');
-    fetch(HostName+'api/getNotifical/'+value)
-      .then((response) => response.json())
-      .then((resopnseJson) => {
-          this.setState ({
-            obj: resopnseJson,
-            isLoadding:false
-          })
-      if(this.state.Cart.length=== 0)
-      {
-        this.setState ({
-          Mail : this.state.obj.length
-        })
-      }
-      else{}
+    const value = await AsyncStorage.getItem('@MyApp2_key');
+    fetch(HostName + 'api/getNotifical/' + value)
+      .then(response => response.json())
+      .then(resopnseJson => {
+        this.setState({
+          obj: resopnseJson,
+          isLoadding: false,
+        });
+        if (this.state.Cart.length === 0) {
+          this.setState({
+            Mail: this.state.obj.length,
+          });
+        } else {
+        }
       })
-      .catch((error) => {
-          alert(error);
+      .catch(error => {
+        alert(error);
       });
-  }
+  };
   render() {
     if (this.state.isLoadding) {
       return (
@@ -189,8 +187,10 @@ export default class FABExample extends Component {
                     name={'md-bicycle'}
                     style={{color: '#ff6347'}}
                     onPress={() => {
-                      this.props.navigation.navigate("SellerProduct", {LoaiXe : "1"});
-                  }}
+                      this.props.navigation.navigate('SellerProduct', {
+                        LoaiXe: '1',
+                      });
+                    }}
                   />
                 </View>
                 <Text style={styles.IconText}>Xe máy</Text>
@@ -203,8 +203,10 @@ export default class FABExample extends Component {
                     name={'md-car'}
                     style={{color: 'green'}}
                     onPress={() => {
-                      this.props.navigation.navigate("SellerProduct", {LoaiXe : "2"});
-                  }}
+                      this.props.navigation.navigate('SellerProduct', {
+                        LoaiXe: '2',
+                      });
+                    }}
                   />
                 </View>
                 <Text style={styles.IconText}>Xe Hơi</Text>
@@ -215,8 +217,8 @@ export default class FABExample extends Component {
                     size={width * 0.2}
                     name={'md-notifications-outline'}
                     style={{color: '#daa520'}}
-                    onPress= {() => {
-                      this.props.navigation.navigate("SellerRequest")
+                    onPress={() => {
+                      this.props.navigation.navigate('SellerRequest');
                     }}
                   />
                   {this.state.Mail > 0 && (
@@ -233,7 +235,6 @@ export default class FABExample extends Component {
                   )}
                 </View>
                 <Text style={styles.IconText}>Thông báo</Text>
-
               </View>
             </View>
             <View style={styles.BoderView}>
@@ -247,7 +248,7 @@ export default class FABExample extends Component {
                 </View>
                 <Text style={styles.IconText}>Lịch sử</Text>
               </View>
-              
+
               <View style={styles.ItemView}>
                 <View style={styles.IconView}>
                   <Icon
@@ -269,10 +270,8 @@ export default class FABExample extends Component {
                   )}
                 </View>
                 <Text style={styles.IconText}>Tin nhắn</Text>
-
               </View>
-              <View style={styles.ItemView}>
-              </View>
+              <View style={styles.ItemView}></View>
             </View>
           </View>
         </Container>
@@ -316,8 +315,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  IconText :{
-    fontSize:16,
-    color:'gray'
-  }
+  IconText: {
+    fontSize: 16,
+    color: 'gray',
+  },
 });

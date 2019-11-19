@@ -15,10 +15,12 @@ import {
   ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
+  FlatList
 } from 'react-native';
-
-import {WebView} from 'react-native-webview';
-
+import Modal from "react-native-modal";
+import {HostName} from '../Models.json';
+import {WebHost} from '../Models.json';
+import Icon from 'react-native-vector-icons/Ionicons';  
 import {
   Container,
   Header,
@@ -26,16 +28,13 @@ import {
   Card,
   CardItem,
   Body,
-  Icon,
   Left,
   Button,
   Footer,
-  FooterTab,
+  FooterTab,Fab
 } from 'native-base';
 
 import Carousel from 'react-native-snap-carousel';
-
-import {FlatList} from 'react-native-gesture-handler';
 
 import Moment from 'moment';
 
@@ -54,6 +53,8 @@ export default class Details extends Component {
       email: '',
       ngaynhap: '',
       t: '',
+      image : [],
+      active: false
     };
   }
   componentDidMount() {
@@ -65,21 +66,42 @@ export default class Details extends Component {
 
     this._fetchData();
     this._fetchNguoiDang();
+    this._LoadHinh();
     this._Bindding();
   }
 
   componentWillUnmount() {
     this.backHandler.remove();
   }
-
+ 
   handleBackPress = () => {
     this.props.navigation.goBack(); // works best when the goBack is async
     return true;
   };
+  _LoadHinh = () => {
+    const i = 0;
+    fetch(HostName + 'api/Images/' + this.props.navigation.state.params.idcar)
+      .then(response => response.json())
+      .then(resopnseJson => {
+        this.setState({
+          image: resopnseJson,
+        });
 
+        if (this.state.image.length == 0) {
+          alert('cant load image');
+        } else {
+          this.setState({
+            sohinh: this.state.image.length,
+          });
+        }
+      })
+      .catch(error => {
+        alert(error);
+      });
+  };
   _fetchNguoiDang = () => {
     fetch(
-      'http://10.0.2.2:45455/api/Users/' +
+      HostName+'api/Users/' +
         this.props.navigation.state.params.manguoidang,
     )
       .then(response => response.json())
@@ -88,7 +110,6 @@ export default class Details extends Component {
           obj: resopnseJson,
           phone: resopnseJson.phone,
           email: resopnseJson.tenNguoiDang,
-          isloadding: false,
         });
 
         if (this.state.obj.length == 0) {
@@ -102,13 +123,14 @@ export default class Details extends Component {
 
   _Bindding = () => {
     fetch(
-      'http://10.0.2.2:45455/api/getcar/' +
+      HostName+'api/getcar/' +
         this.props.navigation.state.params.idcar,
     )
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
           ngayNhap: resopnseJson.ngayNhap,
+          isloadding:false
         });
       })
       .catch(error => {
@@ -118,7 +140,7 @@ export default class Details extends Component {
 
   _fetchData = () => {
     fetch(
-      'http://10.0.2.2:45455/api/DetailsCar/' +
+     HostName+'api/DetailsCar/' +
         this.props.navigation.state.params.idcar,
     )
       .then(response => response.json())
@@ -146,16 +168,22 @@ export default class Details extends Component {
 
   //header images
   _renderItem({item}) {
+   const image = 4
     return (
       <View style={styles.container}>
         <View style={styles.Thumbnail}>
+          <TouchableOpacity onPress={() => {alert('ok')}}>
           <ImageBackground
-            source={{uri: 'http://10.0.2.2:45457' + item.hinh}}
+            source={{uri: WebHost + item.src}}
             containerStyle={styles.imageContainer}
             style={styles.i}
-            parallaxFactor={0.4}>
-            <ScrollView horizontal={true}></ScrollView>
+            parallaxFactor={0.4}
+            >
+             <View style={{ paddingTop:200, right:0, paddingLeft:8}}>
+             <Text style={{color:'white', fontSize:20, fontWeight:'400'}}>{item.id}/{image}</Text>
+             </View>
           </ImageBackground>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -172,7 +200,7 @@ export default class Details extends Component {
             style={{borderBottomLeftRadius: 12, borderBottomRightRadius: 12}}>
             <Body>
               <Button transparent>
-                <Icon active name="thumbs-up" style={{color: '#228b22'}} />
+                <Icon active name="ios-link" style={{color: '#228b22'}} />
                 <Text style={styles.titile}> Đã kiểm chứng</Text>
                 <TouchableOpacity>
                   <Icon
@@ -182,8 +210,8 @@ export default class Details extends Component {
                       paddingRight: 8,
                       color: 'black',
                     }}
-                    name="heart"
-                    size={50}
+                    name="ios-heart"
+                    size={25}
                     onPress={this._Save}
                   />
                 </TouchableOpacity>
@@ -282,14 +310,14 @@ export default class Details extends Component {
     const {navigation} = this.props;
 
     if (this.state.isloadding) {
-      <View style={{justifyContent: 'center', flex: 1}}>
-        <ActivityIndicator size="large" color="#00ff00" paddingTop={80} />
+      <View style={{justifyContent: 'center', flex: 1, alignItems:'center'}}>
+        <ActivityIndicator size="large" color="#00ff00" />
       </View>;
     }
     return (
       <Container style={styles.container}>
         <StatusBar
-          barStyle="light-content"
+          barStyle='dark-content'
           backgroundColor="transparent"
           translucent={true}
         />
@@ -299,10 +327,11 @@ export default class Details extends Component {
               sliderWidth={screenWidth}
               sliderHeight={screenWidth}
               itemWidth={screenWidth}
-              data={this.state.carouselItems}
+              data={this.state.image}
               renderItem={this._renderItem}
               hasParallaxImages={true}
               style={{flex: 1}}
+              layout={'stack'}
             />
           </View>
           <FlatList
@@ -323,8 +352,17 @@ export default class Details extends Component {
                 danger
                 icon
                 style={styles.Button}
-                onPress={this._onPressButton}>
-                <Icon name="chatboxes" />
+                onPress= { () => {
+                  this.props.navigation.navigate('ChatScreens',{
+                    phone: this.props.navigation.state.params.manguoidang,
+                    name: this.state.obj.hoTen,
+                    idsp: this.props.navigation.state.params.idcar,
+                    guisp : true,
+                    img :this.state.carouselItems.hinh
+                  })
+                }}
+               >
+                <Icon name="ios-chatboxes" size={25}/>
                 <Text>Chat</Text>
               </Button>
               <Button
@@ -337,7 +375,7 @@ export default class Details extends Component {
                     maxe: this.props.navigation.state.params.idcar,
                   });
                 }}>
-                <Icon name="paper" />
+                <Icon name="ios-clock" size={25} />
                 <Text style={{fontSize: 16, fontFamily: 'tahoma'}}>
                   {' '}
                   Đặt hẹn ngay{' '}
@@ -346,6 +384,14 @@ export default class Details extends Component {
             </ScrollView>
           </FooterTab>
         </Footer>
+        <Fab
+            active={this.state.active}
+            containerStyle={{ }}
+            style={{ backgroundColor: 'gray', marginLeft:0 }}
+            position="topLeft"
+            onPress={() => {this.props.navigation.goBack()}}>
+            <Icon name="ios-arrow-back" />
+          </Fab>
       </Container>
     );
   }

@@ -61,6 +61,7 @@ export default class FABExample extends Component {
       selected: '0',
       selected2: '',
       obj2: [],
+      obj:[],
     };
   }
 
@@ -109,7 +110,7 @@ export default class FABExample extends Component {
       'hardwareBackPress',
       this.handleBackPress,
     );
-
+    this._GetCar();
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       () => {
@@ -117,6 +118,7 @@ export default class FABExample extends Component {
           isLoadding: true,
           selected: '0',
           selected2: '',
+          
       isModalVisible: false,
         });
         this._GetCar();
@@ -147,7 +149,6 @@ export default class FABExample extends Component {
       .then(resopnseJson => {
         this.setState({
           obj2: resopnseJson,
-          isloadding: false,
         });
       })
       .catch(error => {
@@ -430,7 +431,8 @@ export default class FABExample extends Component {
             translucent={true}
           />
           <View style={styles.container}>
-            <Tabs
+            {this.state.obj.length>0 && (
+              <Tabs
               tabBarUnderlineStyle={{
                 borderBottomWidth: 2.5,
                 borderBottomColor: 'green',
@@ -514,6 +516,7 @@ export default class FABExample extends Component {
                 </View>
               </Tab>
             </Tabs>
+            )}
 
             <Fab
               active={this.state.active}
@@ -545,7 +548,7 @@ export default class FABExample extends Component {
               <View
                 style={{
                   backgroundColor: 'white',
-                  marginTop: (height / 4) * 0.6,
+                  marginTop: (height / 4) * 0.7,
                   borderWidth: 0.4,
                   borderColor: 'gray',
                   borderRadius: 8,

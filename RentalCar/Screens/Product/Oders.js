@@ -5,7 +5,8 @@ import {StatusBar,BackHandler, NumberFormat, FormattedNumber, ListView, Touchabl
 import { Container, Header, Content, Card, CardItem, Body, Icon, Left ,Button,Footer,DatePicker} from "native-base";
 import moment from 'moment';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import {HostName} from '../Models.json';
+import {WebHost} from '../Models.json';
 const { width: screenWidth } = Dimensions.get('window')
 
 const a= '../images/backgroud/white.jpg'
@@ -70,7 +71,7 @@ export default class Seemore extends Component {
   }
 
     _fetchNguoiDang = () => {
-        fetch('http://10.0.2.2:45455/api/Users/1')
+        fetch(HostName+'api/Users/1')
           .then((response) => response.json())
           .then((resopnseJson) => {
            
@@ -92,7 +93,7 @@ export default class Seemore extends Component {
     
     }
     _Bindding = () => {
-        fetch('http://10.0.2.2:45455/api/getcar/'+this.props.navigation.state.params.maxe)
+        fetch(HostName+'api/getcar/'+this.props.navigation.state.params.maxe)
           .then((response) => response.json())
           .then((resopnseJson) => {
               this.setState ({
@@ -206,7 +207,7 @@ export default class Seemore extends Component {
                               locale={"en"}
                               timeZoneOffsetInMinutes={undefined}
                               modalTransparent={false}
-                              animationType={"Slide"}
+                              animationType={"slide"}
                               androidMode={"default"}
                               placeHolderText="Ngày nhận"
                               placeHolderTextStyle= {{fontSize:18, fontWeight:'400', color:'green'}}
@@ -265,7 +266,7 @@ export default class Seemore extends Component {
                           </View>
                           <View style={{flex: 0.6}} >
                             <Text style={styles.TextCardItem}>{this.state.totalDay/(1000 * 60 * 60 * 24)}</Text>
-                            <Text style={styles.TextCardItem}>{this.state.gia} ngày</Text>
+                            <Text style={styles.TextCardItem}>{this._subStr(this.state.gia)} ngày</Text>
                             <Text style={styles.TextCardItem}>2.500.000 đ</Text>
                           </View>
                         </View>
@@ -284,7 +285,7 @@ export default class Seemore extends Component {
               <ScrollView style={{flex:1}} horizontal={true}>
                   <Text style= {{fontSize:20, fontWeight:'100', paddingLeft:20}}>Tổng cộng</Text>
                   <Text style= {{fontSize:22, fontWeight:'100', paddingLeft:width/2-48, textAlign:'right', paddingRight:20}}>
-                  {this.state.gia * (this.state.totalDay/(1000 * 60 * 60 * 24)) + 2500000} đ
+                  {this._subStr(this.state.gia * (this.state.totalDay/(1000 * 60 * 60 * 24)) + 2500000)} đ
                   </Text>
               </ScrollView>
               <View style={{position:'absolute',justifyContent:'flex-end',paddingTop:25}}>
@@ -301,6 +302,34 @@ export default class Seemore extends Component {
     }
 
   }
+  _subStr = (str) => {
+    let chuoi = str.toString();
+    let s = chuoi.length %3;
+    let result = '';
+    if(s!=0)
+    {
+      result += chuoi.substr(0,s)
+    }
+    else
+    {}
+    let cat = s;
+    let dem= 3;
+    while(cat<chuoi.length) 
+    {
+      if(cat == 0)
+      {
+        result += chuoi.substr(cat,dem);
+        cat+=3;
+      }
+      else
+      {
+        result += '.'+chuoi.substr(cat,dem);
+        cat+=3;
+      }
+    }
+    return result
+  }
+
   Oders= async () =>{
     const value =  await AsyncStorage.getItem('@MyApp2_key');
      const {chosenDate, chosenDateTo,disabled} = this.state;
@@ -313,7 +342,7 @@ export default class Seemore extends Component {
       this.setState({ 
         lazyLoad:true
        });
-      fetch('http://10.0.2.2:45455/api/Oders', {
+      fetch(HostName+'api/Oders', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -372,7 +401,7 @@ class CarDetails extends Component {
 
 
   _Bindding = () => {
-      fetch('http://10.0.2.2:45455/api/getcar/1')
+      fetch(HostName+'api/getcar/1')
         .then((response) => response.json())
         .then((resopnseJson) => {
             this.setState ({

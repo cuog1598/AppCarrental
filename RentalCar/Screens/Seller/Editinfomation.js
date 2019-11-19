@@ -22,7 +22,6 @@ import {
 import Modal from 'react-native-modal';
 import {HostName} from '../Models.json';
 import {WebHost} from '../Models.json';
-import {WebView} from 'react-native-webview';
 
 import {
   Container,
@@ -202,7 +201,7 @@ export default class CarDetails extends Component {
 
   
   _Bindding = () => {
-    fetch('http://10.0.2.2:45455/api/getcar/' +this.props.navigation.state.params.idcar)
+    fetch(HostName+'api/getcar/' +this.props.navigation.state.params.idcar)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
@@ -221,7 +220,7 @@ export default class CarDetails extends Component {
   };
 
   _fetchData = () => {
-    fetch('http://10.0.2.2:45455/api/DetailsCar/' + this.props.navigation.state.params.idcar)
+    fetch(HostName+'api/DetailsCar/' + this.props.navigation.state.params.idcar)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
@@ -730,7 +729,7 @@ export default class CarDetails extends Component {
     if (selected == 0 || selected2 == 0 || selected == '' || selected2 == '') {
       alert('chưa nhập thông tin');
     } else {
-      fetch('http://10.0.2.2:45455/api/Xes', {
+      fetch(HostName+'api/Xes', {
         method: 'PUT',
         headers: {
           Accept: 'application/json',

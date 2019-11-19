@@ -64,7 +64,6 @@ export default class CreateNewCar extends Component {
       },
     );
   }
-
   componentWillUnmount() {
     this.willFocusSubscription.remove();
   }
@@ -447,7 +446,7 @@ export default class CreateNewCar extends Component {
   Createcar= async () =>{
       //
     const value =  await AsyncStorage.getItem('@MyApp2_key');
-    fetch('http://10.0.2.2:45455/api/Xes', {
+    fetch(HostName+'api/Xes', {
             method: 'POST',
             headers: {
               'Accept': 'application/json',

@@ -3,7 +3,9 @@ import { Image ,StatusBar, ScrollView,Dimensions,StyleSheet,ImageBackground,Touc
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button,  Left, Body, Right, View } from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';  
 const a= '../images/backgroud/white.jpg'
-
+import {BarIndicator,PacmanIndicator} from 'react-native-indicators'
+import {HostName} from '../Models.json';
+import {WebHost} from '../Models.json';
 
 
 export default class CardImageExample extends Component {
@@ -33,7 +35,7 @@ export default class CardImageExample extends Component {
       return true;
     }
     _fetchUsers = () => {
-        fetch('http://10.0.2.2:45455/api/getxe/'+this.props.navigation.state.params.key)
+        fetch(HostName+'api/getxe/'+this.props.navigation.state.params.key)
           .then((response) => response.json())
           .then((resopnseJson) => {
            
@@ -84,7 +86,7 @@ export default class CardImageExample extends Component {
             </Left>
           </CardItem>
           <CardItem cardBody>
-            <Image source={{uri: 'http://10.0.2.2:45457'+item.hinh}} style={{height: 200, width: null, flex: 1}}/>
+            <Image source={{uri: WebHost+item.hinh}} style={{height: 200, width: null, flex: 1}}/>
           </CardItem>
           
         </Card>
@@ -102,8 +104,13 @@ export default class CardImageExample extends Component {
     if(this.state.isloadding)
     {
       return(
-        <View style={{justifyContent:"center", flex:1}}>
-          <ActivityIndicator size="large" color="#00ff00" paddingTop= {80}/>
+        <View style={{justifyContent:"center", flex:1, alignItems:'center'}}>
+          <StatusBar
+          barStyle='dark-content'
+          backgroundColor="transparent"
+          translucent={true}
+        />
+          <BarIndicator />
         </View>
       )
     }
@@ -112,6 +119,11 @@ export default class CardImageExample extends Component {
     {
       return(
       <SafeAreaView>
+      <StatusBar
+          barStyle='dark-content'
+          backgroundColor="transparent"
+          translucent={true}
+        />
         <View style={styles.container}>
           <View style={styles.Thumbnail}>
             <ImageBackground style={styles.Thumbnail} source={require(a)}>
@@ -121,10 +133,9 @@ export default class CardImageExample extends Component {
           <View
             style={{
             flexDirection: 'row',
-            paddingLeft: 10
             }}>
               <View style={{flex: 0.7}}>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:20}}>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:38}}>
                   <TouchableOpacity onPress={() => {
                                 navigation.goBack()
                             }}>
@@ -136,7 +147,7 @@ export default class CardImageExample extends Component {
                 </ScrollView>
               </View>
               <View style={{flex: 0.3}} horizontal={true}>
-              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:20}}>
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:38}}>
                 <TouchableOpacity onPress={()=>{
                   navigate('CartL')
                 }}>
@@ -182,10 +193,9 @@ export default class CardImageExample extends Component {
         <View
             style={{
             flexDirection: 'row',
-            paddingLeft: 10
             }}>
               <View style={{flex: 0.7}}>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:20}}>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:38}}>
                   <TouchableOpacity onPress={() => {
                                 navigation.goBack()
                             }}>
@@ -197,7 +207,7 @@ export default class CardImageExample extends Component {
                 </ScrollView>
               </View>
               <View style={{flex: 0.3}} horizontal={true}>
-              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:20}}>
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingTop:38}}>
                 <TouchableOpacity onPress={()=>{
                   navigate('CartL')
                 }}>
@@ -238,7 +248,7 @@ const {height,width}= Dimensions.get('window')
 const styles = StyleSheet.create({
     container: {
     backgroundColor: 'transparent',
-    height:85,
+    height:100,
 },
     Thumbnail:{
         flex:1,

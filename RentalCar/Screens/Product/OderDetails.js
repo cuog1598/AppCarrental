@@ -10,7 +10,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const { width: screenWidth } = Dimensions.get('window')
 
 const a= '../images/backgroud/white.jpg'
-
+import {HostName} from '../Models.json';
+import {WebHost} from '../Models.json';
 export default class Seemore extends Component {
  
     constructor(props){
@@ -46,7 +47,7 @@ export default class Seemore extends Component {
   }
 
     _GetAllcart = () => {
-      fetch('http://10.0.2.2:45455/api/Oders/'+this.props.navigation.state.params.mahd)
+      fetch(HostName+'api/Oders/'+this.props.navigation.state.params.mahd)
         .then((response) => response.json())
         .then((resopnseJson) => {
             this.setState ({
@@ -70,7 +71,7 @@ export default class Seemore extends Component {
 
    
     _Bindding = () => {
-        fetch('http://10.0.2.2:45455/api/getcar/'+this.props.navigation.state.params.maxe)
+        fetch(HostName+'api/getcar/'+this.props.navigation.state.params.maxe)
           .then((response) => response.json())
           .then((resopnseJson) => {
               this.setState ({
@@ -83,7 +84,7 @@ export default class Seemore extends Component {
     }
 
     _Bindding2 = () => {
-      fetch('http://10.0.2.2:45455/api/Oderstatus/'+this.props.navigation.state.params.mahd)
+      fetch(HostName+'api/Oderstatus/'+this.props.navigation.state.params.mahd)
         .then((response) => response.json())
         .then((resopnseJson) => {
           this.setState ({
@@ -127,8 +128,9 @@ export default class Seemore extends Component {
       const nam= this.state.title.toString().substr(0,4);
       const time= this.state.title.toString().substr(11,5)
       const title2= ngay+' THG ' + thang +', '+nam +' '+time
+      let tt = this.state.obj.tongTien;
+
       return (
-        
         <Container>
             <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent={true}/>
             <View style={styles.container}>
@@ -233,7 +235,7 @@ export default class Seemore extends Component {
                       <View style={{ marginLeft:5, marginRight:5, flex:0.7}}>
                         <Text style={styles.TextCardItem2}>{this.state.obj.songay}</Text>
                         <Text style={styles.TextCardItem2}>2.500.000 đ</Text>
-                        <Text style={styles.TextCardItem2}>{this.state.obj.tongTien} đ</Text>
+                        <Text style={styles.TextCardItem2}>{this._subStr(tt*1)} đ</Text>
                       </View>
                     </View>
                     </Body>
@@ -243,14 +245,14 @@ export default class Seemore extends Component {
                   <CardItem>
                     <Body>
                     <View style={{flexDirection: 'row', paddingBottom:5}}>
-                      <View style={{marginRight:5, flex:0.7}}>
+                      <View style={{marginRight:5, flex:0.5}}>
                         <Text style={styles.TextHeader}>Tổng cộng</Text>
                       </View>
                       <View style={{  marginRight:5, flex:0.1}}>
                       <Icon style={{fontWeight:'bold'}} name='ios-aperture' size={30}/>
                       </View>
-                      <View style={{ marginRight:5, flex:0.3}}>
-                          <Text style={styles.TextHeader}>{this.state.obj.tongTien} đ</Text>
+                      <View style={{ marginRight:5, flex:0.4}}>
+                          <Text style={styles.TextHeader}>{this._subStr(tt*1)} đ</Text>
                       </View>
                     </View>
                     </Body>
@@ -272,6 +274,33 @@ export default class Seemore extends Component {
       );
     }
 
+  }
+  _subStr = (str) => {
+    let chuoi = str.toString();
+    let s = chuoi.length %3;
+    let result = '';
+    if(s!=0)
+    {
+      result += chuoi.substr(0,s)
+    }
+    else
+    {}
+    let cat = s;
+    let dem= 3;
+    while(cat<chuoi.length) 
+    {
+      if(cat == 0)
+      {
+        result += chuoi.substr(cat,dem);
+        cat+=3;
+      }
+      else
+      {
+        result += '.'+chuoi.substr(cat,dem);
+        cat+=3;
+      }
+    }
+    return result
   }
 }
 
@@ -297,7 +326,7 @@ class CarDetails extends Component {
 
 
   _Bindding = () => {
-      fetch('http://10.0.2.2:45455/api/Oders/14')
+      fetch(HostName+'api/Oders/14')
         .then((response) => response.json())
         .then((resopnseJson) => {
             this.setState ({
