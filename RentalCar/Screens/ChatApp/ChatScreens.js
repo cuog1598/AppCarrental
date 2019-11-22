@@ -383,12 +383,12 @@ export default class HomeScreen extends Component {
                 style={{
                   color: '#fff',
                   padding: 7,
-                  fontSize: 18,
+                  fontSize: 16,
                   flex: 0.96, //height (according to its parent),
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  minHeight: 45,
+                  minHeight: 40,
                   marginLeft: 10,
                 }}
                 numberOfLines={60}>
@@ -425,12 +425,12 @@ export default class HomeScreen extends Component {
               style={{
                 color: '#fff',
                 padding: 7,
-                fontSize: 18,
+                fontSize: 16,
                 flex: 0.96, //height (according to its parent),
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
-                minHeight: 45,
+                minHeight: 40,
                 marginLeft: 10,
               }}
               numberOfLines={60}>

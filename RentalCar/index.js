@@ -9,12 +9,7 @@ import { AppRegistry,InteractionManager } from 'react-native';
 import {name as appName} from './app.json';
 import appcontainer from './appcontainer';
 import { YellowBox } from 'react-native';
-import App from './App';
-import horizontal from './Screens/Components/Horizontal';
-import ListProduct from './Screens/Product/ListProduct'
-import Details from './Screens/Product/Details';
-import Seemore from './Screens/Product/Seemore'
-import Oders from './Screens/Product/Oders'
+
 
 //set timepout
 const _setTimeout = global.setTimeout;
