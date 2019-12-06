@@ -1,12 +1,9 @@
 import React from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   StatusBar,
-  TextInput,
   TouchableOpacity,
   Alert,
   FlatList,
@@ -22,7 +19,6 @@ import User from '../Screens/User';
 import Icon from 'react-native-vector-icons/Ionicons';
 //srvẻerr
 import {HostName} from '../Screens/Models.json';
-import {WebHost} from '../Screens/Models.json';
 const {height, width} = Dimensions.get('window');
 export default class Mail extends React.Component {
   state = {

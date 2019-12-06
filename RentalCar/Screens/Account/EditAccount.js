@@ -87,137 +87,146 @@ export default class Login extends Component {
       });
   };
   render() {
-    return (
-      <View style={styles.container}>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor="transparent"
-          translucent={true}
-        />
-        <View>
-          <ImageBackground
-            style={styles.Thumbnail}
-            source={require('../images/backgroud/moto.jpg')}>
-            <Image
-              style={styles.logo}
-              source={require('../images/logo.png')}></Image>
-            <Text style={styles.title}>{this.state.title2}</Text>
-          </ImageBackground>
-          <View
-            style={{
-              flexDirection: 'row',
-              paddingLeft: 10,
-              paddingTop: 20,
-              justifyContent: 'center',
-              borderRadius: 160 / 2,
-            }}>
-            <View style={{flex: 0.4}}></View>
-            <View style={{flex: 0.3, marginTop: 100}}>
-              <Card style={{borderRadius: (width * 0.3) / 2}}>
-                <CardItem cardBody style={{borderRadius: (width * 0.3) / 2}}>
-                  <Image
-                    style={{
-                      height: width * 0.3,
-                      width: width * 0.3,
-                      borderRadius: (width * 0.3) / 2,
-                    }}
-                    source={{
-                      uri:
-                        'https://scontent.fsgn8-1.fna.fbcdn.net/v/t1.0-9/12717447_625469907606498_721627668975832331_n.jpg?_nc_cat=102&_nc_oc=AQmPHA-WM_fXvvOPcV78gnWxlnIieWeUg0fZoJLwYnHVLwIb90Hb9qa_QUq8mxdmy9E&_nc_ht=scontent.fsgn8-1.fna&oh=55dc51a389ade4abbb521ccd07ca8db9&oe=5E1A6618',
-                    }}></Image>
-                </CardItem>
-              </Card>
-            </View>
-
-            <View style={{flex: 0.4}}></View>
-          </View>
-          <Text
-            style={{
-              marginTop: 10,
-              fontSize: 18,
-              color: 'gray',
-              textAlign: 'center',
-            }}>
-            Thành viên đăng nhập bằng Facebook
-          </Text>
-        </View>
-        <KeyboardAvoidingView style={styles.container}>
-          <TouchableWithoutFeedback
-            style={styles.container}
-            onPress={Keyboard.dismiss}>
-            <View style={styles.logoContainer}>
-              <View style={styles.infoContainer}>
-                <Text style={{marginLeft: 4, fontSize: 17, color: 'gray'}}>
-                  Tên
-                </Text>
-                <Item>
-                  <Input
-                    disabled={this.state.enable}
-                    onChangeText={userName => this.setState({userName})}
-                    value={this.state.userName}
-                    keyboardType="email-address"
-                    returnKeyType="next"
-                    autoCorrect={false}
-                    onSubmitEditing={() => this.refs.txtPassword.focus()}
-                  />
-                </Item>
-                <Item></Item>
-                <Text style={{marginLeft: 4, fontSize: 17, color: 'gray'}}>
-                  Điện thoại
-                </Text>
-                <Item>
-                  <Icon active name="home" />
-                  <Input
-                    disabled={this.state.enable}
-                    onChangeText={Phone => this.setState({Phone})}
-                    value={this.state.Phone}
-                    keyboardType="phone-pad"
-                    returnKeyType="next"
-                    autoCorrect={false}
-                    ref={'txtPassword'}
-                    onSubmitEditing={() => this.refs.txtPassword2.focus()}
-                  />
-                </Item>
-                <Text style={{marginLeft: 4, fontSize: 17, color: 'gray'}}>
-                  Email
-                </Text>
-
-                <Item>
-                  <Input
-                    disabled={this.state.enable}
-                    onChangeText={email => this.setState({email})}
-                    value={this.state.email}
-                    placeholderTextColor="black"
-                    returnKeyType="go"
-                    autoCorrect={false}
-                    ref={'txtPassword2'}
-                  />
-                </Item>
-
-                <TouchableOpacity
-                  style={styles.buttonContainer}
-                  onPress={this.Login}>
-                  {this.state.LazyLoad && (
-                    <View
-                      style={{justifyContent: 'center', flex: 1, margin: 5}}>
-                      <ActivityIndicator
-                        hidesWhenStopped={true}
-                        size="large"
-                        color="#00ff00"
-                        paddingTop={80}
-                      />
-                    </View>
-                  )}
-                  {!this.state.LazyLoad && (
-                    <Text style={styles.buttonText}>Lưu</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+    if(this.state.IsLoadding)
+    {
+        return(
+          <View style={{justifyContent: 'center', flex: 1, alignItems:'center'}}>
+        <ActivityIndicator size="large" color="#00ff00" />
       </View>
-    );
+        )
+    }
+    else
+    {
+      return (
+        <View style={styles.container}>
+          <StatusBar
+            barStyle="light-content"
+            backgroundColor="transparent"
+            translucent={true}
+          />
+          <View>
+            <ImageBackground
+              style={styles.Thumbnail}
+              source={require('../images/backgroud/moto.jpg')}>
+              <Image
+                style={styles.logo}
+                source={require('../images/logo.png')}></Image>
+              <Text style={styles.title}>{this.state.title2}</Text>
+            </ImageBackground>
+            <View
+              style={{
+                flexDirection: 'row',
+                paddingLeft: 10,
+                paddingTop: 20,
+                justifyContent: 'center',
+                borderRadius: 160 / 2,
+              }}>
+              <View style={{flex: 0.4}}></View>
+              <View style={{flex: 0.3, marginTop: 100}}>
+                <Card style={{borderRadius: (width * 0.3) / 2}}>
+                  <CardItem cardBody style={{borderRadius: (width * 0.3) / 2}}>
+                    <Image
+                      style={{
+                        height: width * 0.3,
+                        width: width * 0.3,
+                        borderRadius: (width * 0.3) / 2,
+                      }}
+                      source={{
+                        uri:
+                          'https://scontent.fsgn8-1.fna.fbcdn.net/v/t1.0-9/12717447_625469907606498_721627668975832331_n.jpg?_nc_cat=102&_nc_oc=AQmPHA-WM_fXvvOPcV78gnWxlnIieWeUg0fZoJLwYnHVLwIb90Hb9qa_QUq8mxdmy9E&_nc_ht=scontent.fsgn8-1.fna&oh=55dc51a389ade4abbb521ccd07ca8db9&oe=5E1A6618',
+                      }}></Image>
+                  </CardItem>
+                </Card>
+              </View>
+  
+              <View style={{flex: 0.4}}></View>
+            </View>
+            <Text
+              style={{
+                marginTop: 10,
+                fontSize: 18,
+                color: 'gray',
+                textAlign: 'center',
+              }}>
+              Thành viên đăng nhập bằng Facebook
+            </Text>
+          </View>
+          <KeyboardAvoidingView style={styles.container}>
+            <TouchableWithoutFeedback
+              style={styles.container}
+              onPress={Keyboard.dismiss}>
+              <View style={styles.logoContainer}>
+                <View style={styles.infoContainer}>
+                  <Text style={{marginLeft: 4, fontSize: 17, color: 'gray'}}>
+                    Tên
+                  </Text>
+                  <Item>
+                    <Input
+                      disabled={this.state.enable}
+                      onChangeText={userName => this.setState({userName})}
+                      value={this.state.userName}
+                      keyboardType="email-address"
+                      returnKeyType="next"
+                      autoCorrect={false}
+                    />
+                  </Item>
+                  <Item></Item>
+                  <Text style={{marginLeft: 4, fontSize: 17, color: 'gray'}}>
+                    Điện thoại
+                  </Text>
+                  <Item>
+                    <Icon active name="home" />
+                    <Input
+                      disabled={this.state.enable}
+                      onChangeText={Phone => this.setState({Phone})}
+                      value={this.state.Phone}
+                      keyboardType="phone-pad"
+                      returnKeyType="next"
+                      autoCorrect={false}
+                      ref={'txtPassword'}
+                    />
+                  </Item>
+                  <Text style={{marginLeft: 4, fontSize: 17, color: 'gray'}}>
+                    Email
+                  </Text>
+  
+                  <Item>
+                    <Input
+                      disabled={this.state.enable}
+                      onChangeText={email => this.setState({email})}
+                      value={this.state.email}
+                      placeholderTextColor="black"
+                      returnKeyType="go"
+                      autoCorrect={false}
+                      ref={'txtPassword2'}
+                    />
+                  </Item>
+  
+                  <TouchableOpacity
+                    style={styles.buttonContainer}
+                    onPress={this.Login}>
+                    {this.state.LazyLoad && (
+                      <View
+                        style={{justifyContent: 'center', flex: 1, margin: 5}}>
+                        <ActivityIndicator
+                          hidesWhenStopped={true}
+                          size="large"
+                          color="#00ff00"
+                          paddingTop={80}
+                        />
+                      </View>
+                    )}
+                    {!this.state.LazyLoad && (
+                      <Text style={styles.buttonText}>Lưu</Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
+        </View>
+      );
+    }
   }
   Login = async () => {
     const value = await AsyncStorage.getItem('@MyApp2_key');

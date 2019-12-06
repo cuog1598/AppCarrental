@@ -3,18 +3,19 @@
  */
 
 
-import { AppRegistry,InteractionManager } from 'react-native';
+import { AppRegistry,InteractionManager, Platform } from 'react-native';
 // import App from './App';
 //Components
 import {name as appName} from './app.json';
 import appcontainer from './appcontainer';
 import { YellowBox } from 'react-native';
-
+import Home from './Screens/Home'
 
 //set timepout
 const _setTimeout = global.setTimeout;
 const _clearTimeout = global.clearTimeout;
 const MAX_TIMER_DURATION_MS = 60 * 1000;
+
 if (Platform.OS === 'android') {
 // Work around issue `Setting a timer for long time`
 // see: https://github.com/firebase/firebase-js-sdk/issues/97

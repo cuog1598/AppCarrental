@@ -249,28 +249,9 @@ export default class FABExample extends Component {
                 <Text style={styles.IconText}>Lịch sử</Text>
               </View>
 
-              <View style={styles.ItemView}>
-                <View style={styles.IconView}>
-                  <Icon
-                    size={width * 0.2}
-                    name={'ios-calendar'}
-                    style={{color: '#daa520'}}
-                  />
-                  {this.state.Mail > 0 && (
-                    <View style={styles.Badge}>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontSize: 20,
-                          fontWeight: 'bold',
-                        }}>
-                        {this.state.Mail}
-                      </Text>
-                    </View>
-                  )}
+                <View style={styles.ItemView}>
+                 
                 </View>
-                <Text style={styles.IconText}>Tin nhắn</Text>
-              </View>
               <View style={styles.ItemView}></View>
             </View>
           </View>

@@ -14,10 +14,33 @@ export default class MainComponent extends Component {
         super(props);
      
         this.state = {
-          title2: 'Chúc buổi chiều vui vẻ',
+          title2: 'Chào buổi sáng',
           Home: true,
         };
       }
+
+    componentDidMount() {
+      const day = new Date();
+      const ou = day.getHours();
+      if(ou >10 && ou <5)
+      {
+        this.setState({title2: "Chào buổi trưa"})
+      }      
+      else
+      if(ou >15 && ou < 18)
+      {
+        this.setState({title2: "Chúc buổi chiều vui vẻ"})
+      }
+      else
+      if(ou >18 )
+      {
+        this.setState({title2: "Buổi tối tốt lành"})
+      }
+      else
+      {
+
+      }
+    }
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     }
@@ -68,9 +91,11 @@ export default class MainComponent extends Component {
             <Left style={styles.bodyleft}>
               <Body style={styles.bodyleft}>
                   <Text style={styles.bodytext}>
-                  Cho thuê xe ngay với RentalCar
+                  Cho thuê xe ngay với RentalCar 
                 </Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress = { () =>{
+                  this.props.navigation.navigate("MainSeller")
+                }}>
                   <Text style={styles.kichhoat}>
                    Bắt đầu
                   </Text>

@@ -6,7 +6,6 @@ import {
   BackHandler,
   StyleSheet,
   Text,
-  Image,
   View,
   SafeAreaView,
   TouchableHighlight,
@@ -23,7 +22,7 @@ import Modal from 'react-native-modal';
 import {HostName} from '../Models.json';
 import {WebHost} from '../Models.json';
 import RNFetchBlob from 'rn-fetch-blob';
-
+import { Image } from 'react-native-elements';
 import {
   Container,
   Header,
@@ -51,8 +50,7 @@ import Event from '../Envent';
 
 const {width: screenWidth} = Dimensions.get('window');
 const options = {
-  title: 'Select Avatar',
-  customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+  title: 'Tải hình ảnh',
   storageOptions: {
     skipBackup: true,
     path: 'images',
@@ -277,10 +275,13 @@ export default class CarDetails extends Component {
             flexDirection: 'column',
             marginLeft: 7,
           }}>
-          <Image
-            style={styles.imageThumbnail}
-            source={{uri: WebHost + item.src}}
-          />
+        <Image
+          source={{ uri: WebHost + item.src }}
+          style={styles.imageThumbnail}
+          PlaceholderContent={<ActivityIndicator size="large" />
+          }
+          placeholderStyle={{backgroundColor:'white'}}
+        />
         </View>
       </TouchableHighlight>
     );
@@ -501,6 +502,7 @@ export default class CarDetails extends Component {
                   <Image
                     source={{uri: this.state.imgchosen}}
                     style={{height: 300, width: null}}
+                    PlaceholderContent= {<ActivityIndicator size="large" /> }
                   />
                 )}
                

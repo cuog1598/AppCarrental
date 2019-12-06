@@ -175,12 +175,6 @@ export default class CreateNewCar extends Component {
       return (
         <Container>
             <View style={{marginTop:200}}>
-            <Button onPress={() => {
-                this.props.navigation.goBack()
-            }}>
-
-                <Text>Quay lại</Text>
-            </Button>
             </View>
             
         <Modal
@@ -193,7 +187,7 @@ export default class CreateNewCar extends Component {
             <View
               style={{
                 backgroundColor: 'white',
-                marginTop: (height / 4) * 0.8,
+                marginTop: (height / 4) * 0.4,
                 borderWidth: 0.4,
                 borderColor: 'gray',
                 borderRadius: 8,
@@ -311,7 +305,6 @@ export default class CreateNewCar extends Component {
             <View
               style={{
                 backgroundColor: 'white',
-                marginTop: (height / 4) * 0.3,
                 borderWidth: 0.4,
                 borderColor: 'gray',
                 borderRadius: 8,

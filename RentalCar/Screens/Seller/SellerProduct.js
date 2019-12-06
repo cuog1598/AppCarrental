@@ -7,7 +7,6 @@ import {
   HeaderButtons,
   View,
   ActivityIndicator,
-  Image,
   Dimensions,
   StyleSheet,
   FlatList,
@@ -29,6 +28,7 @@ import {
   Form,
   Label,
 } from 'native-base';
+import { Image } from 'react-native-elements';
 import Head from '../Components/BigHeader';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -273,6 +273,7 @@ export default class FABExample extends Component {
           <Image
             style={styles.imageThumbnail}
             source={{uri: WebHost + item.hinh}}
+            PlaceholderContent ={<ActivityIndicator size="large"/>}
           />
           <Text style={styles.Carname}>{item.tenxe}</Text>
         </TouchableOpacity>
@@ -497,7 +498,7 @@ export default class FABExample extends Component {
                 </View>
               </Tab>
               <Tab
-                heading="Chưa duyệt"
+                heading="Ch duyệt"
                 tabStyle={{backgroundColor: 'white'}}
                 textStyle={{color: 'black'}}
                 activeTabStyle={{backgroundColor: 'white'}}

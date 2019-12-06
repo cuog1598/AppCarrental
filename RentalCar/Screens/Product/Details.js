@@ -54,7 +54,8 @@ export default class Details extends Component {
       ngaynhap: '',
       t: '',
       image : [],
-      active: false
+      active: false,
+      sohinh : '' 
     };
   }
   componentDidMount() {
@@ -85,8 +86,8 @@ export default class Details extends Component {
       .then(resopnseJson => {
         this.setState({
           image: resopnseJson,
+          
         });
-
         if (this.state.image.length == 0) {
           alert('cant load image');
         } else {
@@ -167,8 +168,7 @@ export default class Details extends Component {
   };
 
   //header images
-  _renderItem({item}) {
-   const image = 4
+  _renderItem = ({item}) => {
     return (
       <View style={styles.container}>
         <View style={styles.Thumbnail}>
@@ -180,7 +180,7 @@ export default class Details extends Component {
             parallaxFactor={0.4}
             >
              <View style={{ paddingTop:200, right:0, paddingLeft:8}}>
-             <Text style={{color:'white', fontSize:20, fontWeight:'400'}}>{item.id}/{image}</Text>
+             <Text style={{color:'white', fontSize:20, fontWeight:'400'}}>{item.num}/{item.count}</Text>
              </View>
           </ImageBackground>
           </TouchableOpacity>
