@@ -25,6 +25,7 @@ import SellerRequest from './Screens/Selleradministration/Request';
 import SellerDetailsRequest from './Screens/Selleradministration/DetailsRequest';
 import ChatScreens from './Screens/ChatApp/ChatScreens';
 import ViewUserInfo from './Screens/Account/ViewUserInfo';
+import Oderproduct from './Screens/Product/Odersproduct'
 import Te from './Screens/ChatApp/Te'
 //Screen names
 
@@ -247,6 +248,9 @@ const Appnavigator2= createStackNavigator(
         },
         SeeMore: {screen:SeeMore, navigationOptions:{
             header:null,
+        }},
+        Oderproduct: {screen:Oderproduct, navigationOptions:{
+            header:null
         }},
         Oders: {screen:Oders, navigationOptions:{
             header:null,

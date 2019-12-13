@@ -624,7 +624,7 @@ export default class CarDetails extends Component {
                 <TouchableOpacity
                   onPress={this._UploadImage}
                   >
-                  {this.state.avatarSource != '', this.state.saveLoad == false && (
+                  {this.state.avatarSource != '', this.state.saveLoad === false && (
                     <Text
                       style={{
                         marginTop: 10,

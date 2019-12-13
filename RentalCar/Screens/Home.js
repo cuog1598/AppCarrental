@@ -14,7 +14,7 @@ export default class MainComponent extends Component {
         super(props);
      
         this.state = {
-          title2: 'Chào buổi sáng',
+          title2: '',
           Home: true,
         };
       }
@@ -22,12 +22,12 @@ export default class MainComponent extends Component {
     componentDidMount() {
       const day = new Date();
       const ou = day.getHours();
-      if(ou >10 && ou <5)
+      if(ou >10 && ou <15)
       {
         this.setState({title2: "Chào buổi trưa"})
       }      
       else
-      if(ou >15 && ou < 18)
+      if(ou >=15 && ou < 18)
       {
         this.setState({title2: "Chúc buổi chiều vui vẻ"})
       }
@@ -38,7 +38,7 @@ export default class MainComponent extends Component {
       }
       else
       {
-
+        this.setState({title2: "Chào buổi sáng"})
       }
     }
     componentWillMount() {

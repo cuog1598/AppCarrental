@@ -61,7 +61,7 @@ componentDidMount()
                         </Left>
                         <Body>
                         <Text style={styles.TextHeader}>{item.tenXe}</Text>
-                        <Text note>{item.diaChi}</Text>
+                        <Text note numberOfLines={1}>{item.diaChi}</Text>
                         </Body>
                         <Right style={{justifyContent:'flex-end', marginBottom:7}}>
                         <Text note style={{paddingTop:10}}>{item.ngayLap.toString().substr(0, 10)+', '+item.ngayLap.toString().substr(11,5)}</Text>

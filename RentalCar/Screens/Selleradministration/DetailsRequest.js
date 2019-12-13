@@ -367,7 +367,9 @@ export default class Seemore extends Component {
                           <Text style={styles.TextCardItem2}>
                             {this.state.car.tenNguoiDang}
                           </Text>
-                          <Text style={styles.TextCardItem2}>
+                          <Text style={styles.TextCardItem2}
+                          numberOfLines={1}
+                          >
                             {this.state.car.diachi}
                           </Text>
                         </View>

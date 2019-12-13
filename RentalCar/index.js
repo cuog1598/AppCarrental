@@ -9,7 +9,7 @@ import { AppRegistry,InteractionManager, Platform } from 'react-native';
 import {name as appName} from './app.json';
 import appcontainer from './appcontainer';
 import { YellowBox } from 'react-native';
-import Home from './Screens/Home'
+
 
 //set timepout
 const _setTimeout = global.setTimeout;

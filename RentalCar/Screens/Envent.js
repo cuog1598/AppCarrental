@@ -89,8 +89,10 @@ export default class envent extends Component {
 
             <TouchableOpacity>
 
+              <View style= {{flexDirection:'row'}}>
               <Text style={{paddingTop:150, paddingRight:5,fontSize:20, color:"blue"}}>Xem thêm</Text>
-                <Icon size={40} color={"blue"} name="arrow-forward" />
+                <Icon style={{paddingTop:150, paddingRight:5}} size={40} color={"blue"} name="arrow-forward" />
+              </View>
             </TouchableOpacity>
 
              </CardItem>
