@@ -256,6 +256,10 @@ export default class HeaderMultipleIconExample extends Component {
                   style={{width: undefined}}
                   selectedValue={this.state.selected}
                   onValueChange={this.onValueChange.bind(this)}>
+                    <Picker.Item
+                        label='Chọn tỉnh dưới đây'
+                        value={0}
+                      />
                   {this.state.obj.map(item => {
                     return (
                       <Picker.Item

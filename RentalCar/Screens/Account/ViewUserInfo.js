@@ -3,31 +3,19 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   TouchableWithoutFeedback,
   StatusBar,
-  TextInput,
-  SafeAreaView,
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  BackHandler,
   ImageBackground,
   Dimensions,
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import {
-  Container,
-  Header,
-  Content,
-  Card,
-  CardItem,
-  Body,
-  Item,
-  Input,
-  Icon,
-} from 'native-base';
+import {Card, CardItem, Item, Input, Icon} from 'native-base';
+
+import {Avatar, Image} from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import {HostName} from '../Models.json';
 import {WebHost} from '../Models.json';
@@ -46,17 +34,55 @@ export default class ViewUserInfo extends Component {
     };
   }
 
+  static navigationOptions = ({navigation, state}) => {
+    return {
+      headerTitleStyle: {
+        paddingTop: 20,
+        fontSize: 22,
+        textAlign: 'center',
+        flexGrow: 0.76,
+        alignSelf: 'center',
+      },
+      headerStyle: {
+        height: 90,
+        shadowOpacity: 0,
+        shadowOffset: {
+          height: 0,
+        },
+        shadowColor: 'white',
+        shadowRadius: 0,
+        elevation: 0,
+      },
+      headerLeft: (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}>
+          <Icon
+            style={{
+              paddingLeft: 20,
+              paddingTop: 20,
+              fontWeight: 'bold',
+            }}
+            name="ios-arrow-back"
+            size={30}
+          />
+        </TouchableOpacity>
+      ),
+    };
+  };
+
   componentDidMount = () => {
     this._getUser();
   };
   _getUser = async () => {
-    const value = await AsyncStorage.getItem('@MyApp2_key');
-    fetch(HostName+'api/Users/' + value)
+    const value = this.props.navigation.getParam('userId');
+    fetch(HostName + 'api/Users/' + value)
       .then(response => response.json())
       .then(resopnseJson => {
         this.setState({
           obj: resopnseJson,
-          userName: resopnseJson.hoTen,
+          userName: resopnseJson.diaChi,
           email: resopnseJson.email,
           Phone: resopnseJson.phone,
           IsLoadding: false,
@@ -76,47 +102,20 @@ export default class ViewUserInfo extends Component {
     return (
       <View style={styles.container}>
         <StatusBar
-          barStyle="light-content"
+          barStyle="dark-content"
           backgroundColor="transparent"
           translucent={true}
         />
-        <View>
-          <ImageBackground
-            style={styles.Thumbnail}
-            source={require('../images/backgroud/moto.jpg')}>
-            <Image
-              style={styles.logo}
-              source={require('../images/logo.png')}></Image>
-            <Text style={styles.title}>{this.state.title2}</Text>
-          </ImageBackground>
-          <View
-            style={{
-              flexDirection: 'row',
-              paddingLeft: 10,
-              paddingTop: 20,
-              justifyContent: 'center',
-              borderRadius: 160 / 2,
-            }}>
-            <View style={{flex: 0.4}}></View>
-            <View style={{flex: 0.3, marginTop: 100}}>
-              <Card style={{borderRadius: (width * 0.3) / 2}}>
-                <CardItem cardBody style={{borderRadius: (width * 0.3) / 2}}>
-                  <Image
-                    style={{
-                      height: width * 0.3,
-                      width: width * 0.3,
-                      borderRadius: (width * 0.3) / 2,
-                    }}
-                    source={{
-                      uri:
-                        'https://scontent.fsgn8-1.fna.fbcdn.net/v/t1.0-9/12717447_625469907606498_721627668975832331_n.jpg?_nc_cat=102&_nc_oc=AQmPHA-WM_fXvvOPcV78gnWxlnIieWeUg0fZoJLwYnHVLwIb90Hb9qa_QUq8mxdmy9E&_nc_ht=scontent.fsgn8-1.fna&oh=55dc51a389ade4abbb521ccd07ca8db9&oe=5E1A6618',
-                    }}></Image>
-                </CardItem>
-              </Card>
-            </View>
-
-            <View style={{flex: 0.4}}></View>
-          </View>
+        <View style={{top:0, alignSelf:'center', justifyContent:'center', alignItems:'center'}}>
+            <Avatar
+            size="xlarge"
+              rounded
+              source={{
+                uri:
+                  'https://scontent.fsgn8-1.fna.fbcdn.net/v/t1.0-9/12717447_625469907606498_721627668975832331_n.jpg?_nc_cat=102&_nc_oc=AQmPHA-WM_fXvvOPcV78gnWxlnIieWeUg0fZoJLwYnHVLwIb90Hb9qa_QUq8mxdmy9E&_nc_ht=scontent.fsgn8-1.fna&oh=55dc51a389ade4abbb521ccd07ca8db9&oe=5E1A6618',
+              }}
+            />
+            <Text style= {{fontWeight:'300', fontSize:24, marginTop:5}}>{this.props.navigation.getParam('name')}</Text>
           <Text
             style={{
               marginTop: 10,
@@ -127,14 +126,10 @@ export default class ViewUserInfo extends Component {
             Thành viên đăng nhập bằng Facebook
           </Text>
         </View>
-        <KeyboardAvoidingView style={styles.container}>
-          <TouchableWithoutFeedback
-            style={styles.container}
-            onPress={Keyboard.dismiss}>
             <View style={styles.logoContainer}>
               <View style={styles.infoContainer}>
                 <Text style={{marginLeft: 4, fontSize: 17, color: 'gray'}}>
-                  Tên
+                  Địa chỉ
                 </Text>
                 <Item>
                   <Input
@@ -142,8 +137,8 @@ export default class ViewUserInfo extends Component {
                     value={this.state.userName}
                     keyboardType="email-address"
                     returnKeyType="next"
-                  disabled = {true}
-                  autoCorrect={false}
+                    disabled={true}
+                    autoCorrect={false}
                     onSubmitEditing={() => this.refs.txtPassword.focus()}
                   />
                 </Item>
@@ -159,8 +154,8 @@ export default class ViewUserInfo extends Component {
                     keyboardType="phone-pad"
                     returnKeyType="next"
                     autoCorrect={false}
-                  disabled = {true}
-                  ref={'txtPassword'}
+                    disabled={true}
+                    ref={'txtPassword'}
                     onSubmitEditing={() => this.refs.txtPassword2.focus()}
                   />
                 </Item>
@@ -170,7 +165,7 @@ export default class ViewUserInfo extends Component {
 
                 <Item>
                   <Input
-                  disabled = {true}
+                    disabled={true}
                     onChangeText={email => this.setState({email})}
                     value={this.state.email}
                     placeholderTextColor="black"
@@ -179,10 +174,10 @@ export default class ViewUserInfo extends Component {
                     ref={'txtPassword2'}
                   />
                 </Item>
+              <Text style={{fontSize:21, fontWeight:'300'}}>Sản phẩm</Text>
+
               </View>
             </View>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
       </View>
     );
   }

@@ -82,6 +82,7 @@ export default class HomeScreen extends Component {
           onPress={() => {
             navigation.navigate('ViewUserInfo', {
               userId: navigation.getParam('phone', null),
+              name : navigation.getParam('name',null)
             });
           }}>
           <Icon

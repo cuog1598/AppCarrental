@@ -286,7 +286,7 @@ export default class CarDetails extends Component {
       </TouchableHighlight>
     );
   };
-
+  
   //main list
   _render = ({item}) => {
     let newDate = Moment().format('' + this.state.ngaynhap + 'DD-MM-YYYY');
@@ -298,27 +298,22 @@ export default class CarDetails extends Component {
             transparent
             style={{borderBottomLeftRadius: 12, borderBottomRightRadius: 12}}>
             <Body>
-             
               <Button transparent>
                 <Text style={styles.TenXe}>{item.tenxe}</Text>
                 <Text style={styles.NameHeader}>{item.gia} VNĐ</Text>
               </Button>
-
               <Button transparent disabled={true} style={{paddingTop: -5}}>
                 <Text style={styles.Text}>Địa chỉ</Text>
                 <Text style={styles.Text}>{item.diachi}</Text>
               </Button>
-
               <Button transparent disabled={true}>
                 <Text style={styles.Text}>Tiền cọc</Text>
                 <Text style={styles.Text}>2.500.000 VNĐ</Text>
               </Button>
-
               <Button transparent disabled={true}>
                 <Text>Người đăng</Text>
                 <Text style={styles.Text}>{item.tenNguoiDang}</Text>
               </Button>
-
               <Button transparent disabled={true}>
                 <Text>Điện thoại/ Email</Text>
                 <Text style={styles.Text}>{this.state.phone}</Text>
@@ -326,7 +321,6 @@ export default class CarDetails extends Component {
             </Body>
           </CardItem>
         </Card>
-
         <Card transparent>
           <CardItem
             transparent
