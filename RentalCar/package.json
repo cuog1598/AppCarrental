@@ -11,7 +11,7 @@
     "@react-native-community/async-storage": "^1.6.1",
     "expo-vector-icons": "^10.0.1",
     "firebase": "^7.2.2",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "native-base": "^2.13.8",
     "react": "16.8.6",
     "react-native": "0.60.5",
